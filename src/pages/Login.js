@@ -191,7 +191,7 @@ function Login() {
             fontSize: "1.1rem",
           }}
         >
-          New to Sunny Skills?{" "}
+          New to Sunny Smiles?{" "}
           <Link
             onClick={() => navigate("/signup")}
             style={{ cursor: "pointer" }}
