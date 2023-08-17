@@ -50,6 +50,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
   height: "50px",
   width: "400px",
   borderRadius: "25px",
+  color: "white"
 }));
 
 function Login() {
