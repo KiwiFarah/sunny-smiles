@@ -32,7 +32,7 @@ const StyledGoogleButton = styled(Button)(({ theme }) => ({
 }));
 
 const ModalBox = styled(Box)({
-  width: 520,
+  width: 620,
   padding: "5px 5px 50px 5px", // Adjusted the padding-bottom to 50px
   paddingTop: 100, // Retaining the top padding to account for logo position
   boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.3)",

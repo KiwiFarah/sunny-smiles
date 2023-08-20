@@ -1,0 +1,25 @@
+.gameCanvas {
+    width: 1200px;
+    height: 700px;
+    border: 3px solid #FFA07A;
+    position: relative;
+    overflow: hidden;
+    margin: 20px auto; 
+    background-color: #E0FFFF;
+    border-radius: 15px;
+}
+
+.gameWrapper {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .scoreboard {
+    padding: 20px;
+    border: 1px solid #D49CDA;
+    border-radius: 5px;
+    margin: 20px;
+    font-size: 20px;
+    background-color: #f5f5f5;
+  }
+  
