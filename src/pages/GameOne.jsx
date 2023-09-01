@@ -21,63 +21,35 @@ function GameOne() {
       size: "large",
       targetX: 600,
       targetY: 300,
-      targetR: 60, // Bigger radius for target
+      targetR: 60,
     },
-    // ... More shapes can be added
   ]);
 
   const handleDragStart = (event, shapeId) => {
-    console.log("Dragging started for shape:", shapeId); // Add this line
+    console.log("Dragging started for shape:", shapeId);
     event.dataTransfer.setData("shapeId", shapeId);
   };
 
   const handleDrop = (event, targetShapeId) => {
     event.preventDefault();
-  
+    console.log("Drop event detected on shape:", targetShapeId);
+
     const shapeId = parseInt(event.dataTransfer.getData("shapeId"));
     const draggableShape = shapes.find((s) => s.id === shapeId);
     const targetShape = shapes.find((s) => s.id === targetShapeId);
-  
+
     if (!draggableShape || !targetShape) return;
-  
-    const targetCenterX = targetShape.targetX;
-    const targetCenterY = targetShape.targetY;
-    const draggableCenterX = draggableShape.cx;
-    const draggableCenterY = draggableShape.cy;
-    
-    const distance = Math.sqrt(
-      (draggableCenterX - targetCenterX) ** 2 + (draggableCenterY - targetCenterY) ** 2
-    );
-  
-    setHoveredTarget(null);
-  
+
     if (
       draggableShape.type === targetShape.type &&
-      draggableShape.size !== targetShape.size
+      draggableShape.size === "small" &&
+      targetShape.size === "large"
     ) {
-      const dropX = event.clientX - event.target.getBoundingClientRect().left;
-      const dropY = event.clientY - event.target.getBoundingClientRect().top;
-  
-      const dropDistance = Math.sqrt(
-        (dropX - targetShape.targetX) ** 2 + (dropY - targetShape.targetY) ** 2
-      );
-      if (
-        draggableShape.size !== "small" ||
-        shapes.find((s) => s.id === targetShapeId).size !== "large"
-      ) {
-        return;
-      }
-  
-      if (dropDistance < targetShape.targetR) {
-        console.log("Shape dropped on target");
-        const updatedShapes = shapes.filter(
-          (s) => s.id !== shapeId && s.id !== targetShapeId
-        );
-        setShapes(updatedShapes);
-      }
+      console.log("Shape dropped on target");
+      const updatedShapes = shapes.filter((s) => ![shapeId, targetShapeId].includes(s.id));
+      setShapes(updatedShapes);
     }
   };
-  
 
   const allowDrop = (event) => {
     event.preventDefault();
@@ -151,9 +123,9 @@ function GameOne() {
         ))}
       </div>
       <div className="scoreboard">
-      Shapes Left: {shapes.filter((shape) => shape.size === "small").length}
+        Shapes Left: {shapes.filter((shape) => shape.size === "small").length}
+      </div>
     </div>
-  </div>
   );
 }
 
