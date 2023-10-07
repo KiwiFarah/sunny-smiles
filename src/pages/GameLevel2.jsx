@@ -85,28 +85,6 @@ function GameLevel2() {
         targetHeight: 60,
       },
       {
-        id: 5,
-        type: "triangle",
-        color: "#D9A48E",
-        size: "small",
-        vertices: [
-          { x: 50, y: 350 },
-          { x: 110, y: 350 },
-          { x: 80, y: 280 }
-        ]
-      },
-      {
-        id: 6,
-        type: "triangle",
-        color: "#D9A48E",
-        size: "large",
-        targetVertices: [
-          { x: 700, y: 550 },
-          { x: 790, y: 550 },
-          { x: 745, y: 450 }
-        ]
-      },
-      {
         id: 7,
         type: "pentagon",
         color: "#A8C9A5",

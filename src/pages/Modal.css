@@ -1,0 +1,163 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.modalContent {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    position: relative;
+    width: 60%;
+    max-width: 550px;
+    text-align: center;
+}
+
+.closeIcon {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    cursor: pointer;
+    color: #444;
+    font-size: 24px;
+    transition: color 0.3s;
+}
+
+.closeIcon:hover {
+    color: #222;
+}
+
+h1 {
+    font-weight: 800;          /* Bold font weight */
+    font-size: 40px;           /* Increased font size */
+    color: #2a2a2a;            /* Slightly dark color */
+    margin-top: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);  /* Subtle text shadow for depth */
+    line-height: 1.2;         /* Improved line height for better readability */
+    letter-spacing: -1px;     /* Slightly decreased letter spacing to pack the letters */
+    text-transform: uppercase; /* Making the text uppercase for more emphasis */
+}
+
+p {
+    font-weight: 500;          /* Medium font weight */
+    font-size: 20px;           /* Slightly increased font size */
+    color: #555;               /* Neutral gray color */
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05); /* Very subtle text shadow for a bit of depth */
+    line-height: 1.4;         /* Improved line height for better readability */
+    letter-spacing: 0.3px;    /* Slightly increased letter spacing for better readability */
+}
+
+
+.modalLogo {
+    width: 200px;  /* Adjusted logo size */
+    display: block;
+    margin: 0 auto 20px auto;
+}
+
+.generateReportButton {
+    background-color: #60a5d5    ;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    margin-top: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    display: inline-block;
+    margin-right: 20px;  /* Space between buttons */
+}
+
+.generateReportButton:hover {
+    background-color: #1565c0;
+}
+
+.nextLevelButton {
+    
+    background: linear-gradient(45deg, #FFA07A 20%, #D49CDA 100%); /* Different color for the Next Level button */
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    float: right;
+}
+
+.nextLevelButton:hover {
+    background-color: #43a047;
+}
+
+.nextLevelButton:after {
+    content: " ";
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+.buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* This ensures all children are vertically centered */
+    margin-top: 20px;
+}
+
+.generateReportButton, .nextLevelButton {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;  /* Removing default margins */
+    padding: 10px 20px;  /* Consistent padding */
+    height: 40px;  /* Setting an explicit height */
+    border: none; /* Removing any borders */
+    box-sizing: border-box; /* Ensuring padding is included in the total height */
+}
+.generateReportButton:hover {
+    background-color: #5492c0; 
+    transform: translateY(-2px);  /* Slightly lighter shade */
+}
+.nextLevelButton {
+    background: linear-gradient(45deg, #FFA07A 20%, #D49CDA 100%);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.3s; /* Add transform for a subtle lift effect on hover */
+    float: right;
+}
+
+.nextLevelButton:hover {
+    transform: translateY(-2px);  /* Lifts the button up slightly for a subtle hover effect */
+    background: linear-gradient(45deg, #FF6347 20%, #D273C9 100%);  /* Adjust gradient for hover effect */
+}
+
+/* To vertically center the SVG arrow icon */
+.nextLevelButton svg {
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Vertically centers children */
+    margin-top: 20px; /* Space between the text and buttons */
+    padding-top: 10px; /* Extra space for better look */
+    border-top: 4px solid #eee; /* A subtle line to separate the buttons from the text above */
+}

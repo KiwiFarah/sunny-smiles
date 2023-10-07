@@ -23,16 +23,6 @@ function Shape({ type, color, dimensions }) {
           />
         </svg>
       );
-    case "triangle":
-      const [A, B, C] = dimensions.vertices;
-      return (
-        <svg width={B.x - A.x} height={A.y - C.y}>
-          <polygon
-            points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
-            fill={color}
-          />
-        </svg>
-      );
     case "pentagon":
       // For simplicity, I'll create a symmetrical pentagon using its width and height
       const w = dimensions.width;
@@ -199,6 +189,20 @@ function Shape({ type, color, dimensions }) {
       return (
         <svg width={hw} height={hh}>
           <polygon points={hexPoints} fill={color} />
+        </svg>
+      );
+      case "triangle":
+      const tw = dimensions.width;
+      const th = dimensions.height;
+      const trianglePoints = [
+        { x: tw / 2, y: 0 },
+        { x: tw, y: th },
+        { x: 0, y: th }
+      ].map(p => `${p.x},${p.y}`).join(" ");
+
+      return (
+        <svg width={tw} height={th}>
+          <polygon points={trianglePoints} fill={color} />
         </svg>
       );
     default:
