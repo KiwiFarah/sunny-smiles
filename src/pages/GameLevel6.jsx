@@ -1,40 +1,72 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Game.css";
 import Shape from "./Shape";
+import { createModel, getPrediction } from "./mlModel";
+import Modal from "./Modal";
+import InfoStrip from "./InfoStrip";
+import LevelGuide from "./LevelGuide";
 
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 700;
 
-const BUFFER = 20;  // Change value to adjust buffer
-
 function doesOverlap(newShape, existingShapes) {
-  for (let shape of existingShapes) {
-    if (
-      newShape.x - BUFFER < shape.x + shape.width &&
-      newShape.x + newShape.width + BUFFER > shape.x &&
-      newShape.y - BUFFER < shape.y + shape.height &&
-      newShape.y + newShape.height + BUFFER > shape.y
-    ) {
-      return true;
+    for (let shape of existingShapes) {
+        if (newShape.type === "circle" && shape.type === "circle") {
+            const distance = Math.sqrt(
+                (newShape.cx - shape.cx) ** 2 + (newShape.cy - shape.cy) ** 2
+            );
+            if (distance < (newShape.r + shape.r)) {
+                return true;
+            }
+        } else if (newShape.type !== "circle" && shape.type !== "circle") {
+            if (
+                newShape.x < shape.x + shape.width &&
+                newShape.x + newShape.width > shape.x &&
+                newShape.y < shape.y + shape.height &&
+                newShape.y + newShape.height > shape.y
+            ) {
+                return true;
+            }
+        } else {
+            if (
+                newShape.x < shape.cx + shape.r &&
+                newShape.x + newShape.width > shape.cx - shape.r &&
+                newShape.y < shape.cy + shape.r &&
+                newShape.y + newShape.height > shape.cy - shape.r
+            ) {
+                return true;
+            }
+        }
     }
-  }
-  return false;
+    return false;
 }
 
+function randomizePosition(shapeWidth, shapeHeight, existingShapes) {
+    let shape = {};
+    let tries = 0;
+    const buffer = 10;
+    do {
+        shape = {
+            x: buffer + Math.random() * (CANVAS_WIDTH - shapeWidth - 2 * buffer),
+            y: buffer + Math.random() * (CANVAS_HEIGHT - shapeHeight - 2 * buffer),
+            width: shapeWidth,
+            height: shapeHeight,
+        };
+        tries++;
+    } while (doesOverlap(shape, existingShapes) && tries < 100);
 
-function getRandomGridPosition(shapeWidth, shapeHeight) {
-    const x = Math.random() * (CANVAS_WIDTH - shapeWidth);
-    const y = Math.random() * (CANVAS_HEIGHT - shapeHeight);
-  
-    return { x, y };
+    return { x: shape.x, y: shape.y };
 }
 
-  
 function GameLevel6() {
-  const [gameActive, setGameActive] = useState(true);
-  
-  let initialShapes = [
-    {
+    const [gameActive, setGameActive] = useState(true);
+    const [startTime, setStartTime] = useState(Date.now());
+    const [correctMatches, setCorrectMatches] = useState(0);
+    const [incorrectAttempts, setIncorrectAttempts] = useState(0);
+    const [model, setModel] = useState(null);
+
+    let initialShapes = [
+      {
         id: 1,
         type: "circle",
         color: "#D49CDA",
@@ -51,7 +83,7 @@ function GameLevel6() {
       {
         id: 3,
         type: "rectangle",
-        color: "#9BC4D4",
+        color: "#3d85c6",
         size: "small",
         width: 60,
         height: 30,
@@ -59,10 +91,30 @@ function GameLevel6() {
       {
         id: 4,
         type: "rectangle",
-        color: "#9BC4D4",
+        color: "#3d85c6",
         size: "large",
         targetWidth: 120,
         targetHeight: 60,
+      },
+      {
+        id: 5,
+        type: "triangle",
+        color: "#FFA726",
+        size: "small",
+        x: 350,
+        y: 350,
+        width: 60,
+        height: 60,
+      },
+      {
+        id: 6,
+        type: "triangle",
+        color: "#FFA726",
+        size: "large",
+        targetX: 750,
+        targetY: 450,
+        targetWidth: 120,
+        targetHeight: 120,
       },
       {
         id: 7,
@@ -83,43 +135,36 @@ function GameLevel6() {
       {
         id: 9,
         type: "hexagon",
-        color: "#FAE199",
+        color: "#8f73e6",
         size: "small",
         width: 60,
-        height: 52,  
+        height: 52,
       },
       {
         id: 10,
         type: "hexagon",
-        color: "#FAE199",
+        color: "#8f73e6",
         size: "large",
-        targetWidth: 120, 
+        targetWidth: 120,
+        targetHeight: 104,
       },
       {
         id: 11,
-        type: "hexagon",
-        color: "#FAE199",
+        type: "octagon",
+        color: "#E7AD99",
+        size: "small",
+        width: 60,
+        height: 60,
+      },
+      {
+        id: 12,
+        type: "octagon",
+        color: "#E7AD99",
         size: "large",
-        targetWidth: 120, 
-        targetHeight: 104
-    },
-    {
-      id: 12,
-      type: "octagon",
-      color: "#E7AD99",
-      size: "small",
-      width: 60,
-      height: 60,
-    },
-    {
-      id: 13,
-      type: "octagon",
-      color: "#E7AD99",
-      size: "large",
-      targetWidth: 120,
-      targetHeight: 120,
-    }, 
-    {
+        targetWidth: 120,
+        targetHeight: 120,
+      },
+      {
         id: 14,
         type: "nonagon",
         color: "#B1A1F7",
@@ -144,154 +189,214 @@ function GameLevel6() {
         height: 60,
       },
       {
-        id:17,
+        id: 17,
         type: "star",
         color: "#E1E15A",
         size: "large",
         targetWidth: 100,
         targetHeight: 100,
-      }, 
-      {
-        id: 18,
-        type: "ellipse",
-        color: "#B4E15A",
-        size: "small",
-        width: 40,
-        height: 60,
-      },
-      {
-        id: 19,
-        type: "ellipse",
-        color: "#B4E15A",
-        size: "large",
-        targetWidth: 60,
-        targetHeight: 80,
-    }    
-  ];
+      },  
+    ];
 
+
+    let placedShapes = [];
+    let randomizedShapes = initialShapes.map((shape) => {
+        const shapeWidth = shape.type === "circle" ? shape.r * 2 : shape.width || shape.targetWidth;
+        const shapeHeight = shape.type === "circle" ? shape.r * 2 : shape.height || shape.targetHeight;
+
+        const randomPos = randomizePosition(shapeWidth, shapeHeight, placedShapes);
+
+        placedShapes.push({
+            x: randomPos.x,
+            y: randomPos.y,
+            width: shapeWidth,
+            height: shapeHeight,
+        });
+
+        if (shape.type === "circle") {
+            shape.cx = randomPos.x + shape.r;
+            shape.cy = randomPos.y + shape.r;
+        } else {
+            shape.x = randomPos.x;
+            shape.y = randomPos.y;
+        }
+
+        return shape;
+    });
+
+    const [shapes, setShapes] = useState(randomizedShapes);
+    const [positions, setPositions] = useState({});
+    const [showModal, setShowModal] = useState(false);
+    const [potentialDropTargets, setPotentialDropTargets] = useState([]);
+
+
+    useEffect(() => {
+        if (shapes.filter((shape) => shape.size === "small").length === 0) {
+            setGameActive(false);
+            setShowModal(true);
+        }
+    }, [shapes]);
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
+    const handleGenerateReport = () => {
+        setShowModal(false);
+    };
+
+    const handleDragStart = (event, shapeId) => {
+      event.dataTransfer.setData("shapeId", shapeId);
+      const draggableShape = shapes.find((s) => s.id === shapeId);
+      
+      const validTargets = shapes.filter(targetShape => 
+          draggableShape.type === targetShape.type && 
+          draggableShape.size !== targetShape.size && 
+          draggableShape.id !== targetShape.id
+      ).map(t => t.id);
   
-  let placedShapes = [];
-  const MAX_RETRIES = 500;
-
-initialShapes = initialShapes.map(shape => {
-  const shapeWidth = shape.width || shape.targetWidth || shape.r * 2 || shape.targetR * 2;
-  const shapeHeight = shape.height || shape.targetHeight || shape.r * 2 || shape.targetR * 2;
-
-  let randomPos;
-  let retries = 0;
-  do {
-    randomPos = getRandomGridPosition(shapeWidth, shapeHeight);
-    retries++;
-    if (retries > MAX_RETRIES) {
-      console.warn(`Couldn't find position for shape ${shape.id} after ${MAX_RETRIES} retries. Skipping.`);
-      return null;  // This will remove the shape that couldn't be placed. 
-    }
-  } while (doesOverlap({ ...randomPos, width: shapeWidth, height: shapeHeight }, placedShapes));
-
-  placedShapes.push({ ...randomPos, width: shapeWidth, height: shapeHeight });
-
-    if (shape.size === "small") {
-      shape.cx = randomPos.x + shapeWidth / 2;
-      shape.cy = randomPos.y + shapeHeight / 2;
-      shape.x = randomPos.x;
-      shape.y = randomPos.y;
+      setPotentialDropTargets(validTargets);
+  };
+  
+  const handleDragOver = (event, targetShapeId) => {
+    event.preventDefault();
+    if (potentialDropTargets.includes(targetShapeId)) {
+        event.target.style.cursor = 'copy';
     } else {
-      shape.targetX = randomPos.x;
-      shape.targetY = randomPos.y;
+        event.target.style.cursor = 'no-drop';
     }
-    return shape;
-  }).filter(Boolean);
+};
 
-  const [shapes, setShapes] = useState(initialShapes);
 
-  const handleDragStart = (event, shapeId) => {
-    event.dataTransfer.setData("shapeId", shapeId);
+    const handleDrop = (event, targetShapeId) => {
+        event.preventDefault();
+        const shapeId = parseInt(event.dataTransfer.getData("shapeId"));
+        const draggableShape = shapes.find((s) => s.id === shapeId);
+        const targetShape = shapes.find((s) => s.id === targetShapeId);
+
+        if (!draggableShape || !targetShape) return;
+
+        if (draggableShape.type === targetShape.type && draggableShape.size !== targetShape.size) {
+            setCorrectMatches(correctMatches + 1);
+            const updatedShapes = shapes.filter((s) => ![shapeId, targetShapeId].includes(s.id));
+            setShapes(updatedShapes);
+
+            const { clientX, clientY } = event;
+            const offsetX = draggableShape.type === "circle" ? (draggableShape.size === "small" ? draggableShape.r : draggableShape.targetR) : (draggableShape.size === "small" ? draggableShape.width / 2 : draggableShape.targetWidth / 2);
+            const offsetY = draggableShape.type === "circle" ? (draggableShape.size === "small" ? draggableShape.r : draggableShape.targetR) : (draggableShape.size === "small" ? draggableShape.height / 2 : draggableShape.targetHeight / 2);
+
+            setPositions((prev) => ({
+                ...prev,
+                [shapeId]: { x: clientX - offsetX, y: clientY - offsetY, dropped: true },
+            }));
+        } else {
+            setIncorrectAttempts(incorrectAttempts + 1);
+            setPositions((prev) => ({
+                ...prev,
+                [shapeId]: { ...prev[shapeId], dropped: false },
+            }));
+        }
+    };
+
+    const handleDragEnd = (event, shapeId) => {
+      setPotentialDropTargets([]); // Reset potential targets
+  
+      const initialX = parseFloat(event.dataTransfer.getData("initialX"));
+      const initialY = parseFloat(event.dataTransfer.getData("initialY"));
+  
+      const { clientX, clientY } = event;
+      const shape = shapes.find((s) => s.id === shapeId);
+      const offsetX = shape.type === "circle" ? (shape.size === "small" ? shape.r : shape.targetR) : (shape.size === "small" ? shape.width / 2 : shape.targetWidth / 2);
+      const offsetY = shape.type === "circle" ? (shape.size === "small" ? shape.r : shape.targetR) : (shape.size === "small" ? shape.height / 2 : shape.targetHeight / 2);
+  
+      const validDrop = positions[shapeId] && positions[shapeId].dropped;
+  
+      setPositions((prev) => ({
+          ...prev,
+          [shapeId]: {
+              x: validDrop ? clientX - offsetX : initialX,
+              y: validDrop ? clientY - offsetY : initialY,
+          },
+      }));
   };
+  
+    const updatePosition = (shape, position) => {
+        const x = position.x || (shape.type === "circle" ? (shape.size === "small" ? shape.cx - shape.r : shape.targetX ? shape.targetX - shape.targetR : shape.cx - shape.r) : (shape.size === "small" ? shape.x : shape.targetX || shape.x));
+        const y = position.y || (shape.type === "circle" ? (shape.size === "small" ? shape.cy - shape.r : shape.targetY ? shape.targetY - shape.targetR : shape.cy - shape.r) : (shape.size === "small" ? shape.y : shape.targetY || shape.y));
+        return { x, y };
+    };
 
-  const handleDrop = (event, targetShapeId) => {
-    event.preventDefault();
-    const shapeId = parseInt(event.dataTransfer.getData("shapeId"));
-    const draggableShape = shapes.find((s) => s.id === shapeId);
-    const targetShape = shapes.find((s) => s.id === targetShapeId);
+    const allowDrop = (event) => {
+        event.preventDefault();
+    };
 
-    if (!draggableShape || !targetShape) return;
+    const generateReport = () => {
+        const timeTaken = (Date.now() - startTime) / 1000;
+        const prediction = getPrediction(model, timeTaken, correctMatches, incorrectAttempts);
+        return {
+            timeTaken,
+            correctMatches,
+            incorrectAttempts,
+            predictedImprovement: prediction,
+        };
+    };
 
-    if (
-      draggableShape.type === targetShape.type &&
-      draggableShape.size !== targetShape.size
-    ) {
-      const updatedShapes = shapes.filter(
-        (s) => ![shapeId, targetShapeId].includes(s.id)
-      );
-      setShapes(updatedShapes);
-    }
-  };
+    return (
+        <div>
+            <div className="gameControls"></div>
+            <div className="gameContainer">
+                <div className="flexContainer">
+                    <div className="gameContent">
+                        <div className="gameCanvas" onDragOver={allowDrop}>
+                            {shapes.map((shape) => {
+                                const position = positions[shape.id] || {};
+                                const pos = updatePosition(shape, position);
+                                return (
+                                    <div
+                                        key={shape.id}
+                                        draggable={gameActive}
+                                        onDragStart={(event) => handleDragStart(event, shape.id)}
+                                        onDragEnd={(event) => handleDragEnd(event, shape.id)}
+                                        onDrop={(event) => handleDrop(event, shape.id)}
+                                        onDragOver={handleDragOver}
+                                        style={{
+                                            position: "absolute",
+                                            top: pos.y,
+                                            left: pos.x,
+                                            width: shape.type === "circle" ? (shape.size === "small" ? shape.r * 2 : shape.targetR * 2) : (shape.size === "small" ? shape.width : shape.targetWidth),
+                                            height: shape.type === "circle" ? (shape.size === "small" ? shape.r * 2 : shape.targetR * 2) : (shape.size === "small" ? shape.height : shape.targetHeight),
+                                        }}
+                                    >
+                                        <Shape
+                                            type={shape.type}
+                                            color={shape.color}
+                                            dimensions={shape.size === "small" ? shape : (shape.type === "circle" ? { r: shape.targetR } : { width: shape.targetWidth, height: shape.targetHeight })}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <div className="scoreboard">
+                            Shapes Left: {shapes.filter((shape) => shape.size === "small").length}
+                        </div>
+                    </div>
+                </div>
 
-  const [positions, setPositions] = useState({});
-  const handleDragEnd = (event, shapeId) => {
-    const { clientX, clientY } = event;
-    setPositions(prev => ({
-      ...prev,
-      [shapeId]: { x: clientX, y: clientY }
-    }));
-  };
-
-  const allowDrop = (event) => {
-    event.preventDefault();
-  };
-
-  return (
-    <div>
-      <div className="gameControls"></div>
-      <div className="gameCanvas" onDragOver={allowDrop}>
-        {shapes.map((shape) => {
-          const position = positions[shape.id] || {};
-          return (
-            <div
-              key={shape.id}
-              draggable={gameActive}
-              onDragStart={(event) => handleDragStart(event, shape.id)}
-              onDragEnd={(event) => handleDragEnd(event, shape.id)}
-              onDrop={(event) => handleDrop(event, shape.id)}
-              onDragOver={(event) => event.preventDefault()}
-              style={{
-                position: "absolute",
-                top: position.y || (shape.type === "circle" 
-                     ? (shape.size === "small" ? shape.cy - shape.r : shape.targetY - shape.targetR) 
-                     : (shape.size === "small" ? shape.y : shape.targetY)),
-                left: position.x || (shape.type === "circle" 
-                     ? (shape.size === "small" ? shape.cx - shape.r : shape.targetX - shape.targetR) 
-                     : (shape.size === "small" ? shape.x : shape.targetX)),
-                width: shape.type === "circle" 
-                     ? (shape.size === "small" ? shape.r * 2 : shape.targetR * 2) 
-                     : (shape.size === "small" ? shape.width : shape.targetWidth),
-                height: shape.type === "circle" 
-                     ? (shape.size === "small" ? shape.r * 2 : shape.targetR * 2) 
-                     : (shape.size === "small" ? shape.height : shape.targetHeight),
-              }}
-            >
-              <Shape
-                type={shape.type}
-                color={shape.color}
-                dimensions={
-                    shape.size === "small"
-                      ? shape
-                      : shape.type === "circle"
-                      ? { r: shape.targetR }
-                      : shape.type === "triangle"
-                      ? { vertices: shape.targetVertices }
-                      : { width: shape.targetWidth, height: shape.targetHeight }
-                  }
-                  
-              />
+                {showModal && <div className="backdrop"></div>}
+                {showModal && (
+                    <Modal currentLevel={6} show={showModal}>
+                        <h2>Congratulations!</h2>
+                        <p>You did fantastic! Ready for the next level?</p>
+                        <button onClick={handleGenerateReport}>
+                            Generate Analysis Report
+                        </button>
+                    </Modal>
+                )}
+              <LevelGuide key={showModal ? 'faded' : 'visible'} level={6} className={showModal ? 'faded' : ''} />
+                <InfoStrip startTime={startTime} correctMatches={correctMatches} incorrectAttempts={incorrectAttempts} />
             </div>
-          );
-        })}
-      </div>
-      <div className="scoreboard">
-        Shapes Left: {shapes.filter((shape) => shape.size === "small").length}
-      </div>
-    </div>
-  );
+        </div>
+    );
 }
+
 export default GameLevel6;

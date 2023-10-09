@@ -12,10 +12,13 @@ function InfoStrip({ startTime, correctMatches, incorrectAttempts }) {
         return () => clearInterval(interval);
     }, [startTime]);
 
+    const minutes = Math.floor(elapsedTime / 60);
+    const seconds = elapsedTime % 60;
+
     return (
         <div className="infoStrip">
             <h3>Game Info</h3>
-            <p><strong>Time:</strong> {elapsedTime} seconds</p>
+            <p><strong>Time elapsed:</strong> {minutes}m {seconds}s</p>
             <p><strong>Correct:</strong> {correctMatches}</p>
             <p><strong>Incorrect:</strong> {incorrectAttempts}</p>
         </div>

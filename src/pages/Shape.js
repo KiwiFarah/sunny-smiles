@@ -63,47 +63,53 @@ function Shape({ type, color, dimensions }) {
           <polygon points={octPoints} fill={color} />
         </svg>
       );
-      case "heptagon":
+    case "heptagon":
       const heptw = dimensions.width;
       const hepth = dimensions.height;
-      const heptPoints = Array.from({ length: 7 }).map((_, i) => {
-        const angle = (Math.PI / 3.5) * i;
-        const x = heptw / 2 + (heptw / 2) * Math.cos(angle);
-        const y = hepth / 2 + (hepth / 2) * Math.sin(angle);
-        return `${x},${y}`;
-      }).join(" ");
-      
+      const heptPoints = Array.from({ length: 7 })
+        .map((_, i) => {
+          const angle = (Math.PI / 3.5) * i;
+          const x = heptw / 2 + (heptw / 2) * Math.cos(angle);
+          const y = hepth / 2 + (hepth / 2) * Math.sin(angle);
+          return `${x},${y}`;
+        })
+        .join(" ");
+
       return (
         <svg width={hw} height={hh}>
           <polygon points={heptPoints} fill={color} />
         </svg>
       );
 
-      case "nonagon":
-        const nw = dimensions.width;
-        const nh = dimensions.height;
-        const nonaPoints = Array.from({ length: 9 }).map((_, i) => {
-            const angle = (2 * Math.PI / 9) * i;  // Fix angle for nonagon
-            const x = nw / 2 + (nw / 2) * Math.cos(angle);
-            const y = nh / 2 + (nh / 2) * Math.sin(angle);
-            return `${x},${y}`;
-        }).join(" ");
-    
-        return (
-            <svg width={nw} height={nh}>
-                <polygon points={nonaPoints} fill={color} />
-            </svg>
-        );
-    
+    case "nonagon":
+      const nw = dimensions.width;
+      const nh = dimensions.height;
+      const nonaPoints = Array.from({ length: 9 })
+        .map((_, i) => {
+          const angle = ((2 * Math.PI) / 9) * i; // Fix angle for nonagon
+          const x = nw / 2 + (nw / 2) * Math.cos(angle);
+          const y = nh / 2 + (nh / 2) * Math.sin(angle);
+          return `${x},${y}`;
+        })
+        .join(" ");
+
+      return (
+        <svg width={nw} height={nh}>
+          <polygon points={nonaPoints} fill={color} />
+        </svg>
+      );
+
     case "decagon":
       const dw = dimensions.width;
       const dh = dimensions.height;
-      const decaPoints = Array.from({ length: 10 }).map((_, i) => {
-        const angle = (Math.PI / 5) * i;
-        const x = dw / 2 + (dw / 2) * Math.cos(angle);
-        const y = dh / 2 + (dh / 2) * Math.sin(angle);
-        return `${x},${y}`;
-      }).join(" ");
+      const decaPoints = Array.from({ length: 10 })
+        .map((_, i) => {
+          const angle = (Math.PI / 5) * i;
+          const x = dw / 2 + (dw / 2) * Math.cos(angle);
+          const y = dh / 2 + (dh / 2) * Math.sin(angle);
+          return `${x},${y}`;
+        })
+        .join(" ");
 
       return (
         <svg width={dw} height={dh}>
@@ -114,12 +120,14 @@ function Shape({ type, color, dimensions }) {
     case "hendecagon":
       const hew = dimensions.width;
       const heh = dimensions.height;
-      const hendePoints = Array.from({ length: 11 }).map((_, i) => {
-        const angle = (Math.PI / 5.5) * i;
-        const x = hew / 2 + (hew / 2) * Math.cos(angle);
-        const y = heh / 2 + (heh / 2) * Math.sin(angle);
-        return `${x},${y}`;
-      }).join(" ");
+      const hendePoints = Array.from({ length: 11 })
+        .map((_, i) => {
+          const angle = (Math.PI / 5.5) * i;
+          const x = hew / 2 + (hew / 2) * Math.cos(angle);
+          const y = heh / 2 + (heh / 2) * Math.sin(angle);
+          return `${x},${y}`;
+        })
+        .join(" ");
 
       return (
         <svg width={hew} height={heh}>
@@ -130,12 +138,14 @@ function Shape({ type, color, dimensions }) {
     case "dodecagon":
       const dodw = dimensions.width;
       const dodh = dimensions.height;
-      const dodecPoints = Array.from({ length: 12 }).map((_, i) => {
-        const angle = (Math.PI / 6) * i;
-        const x = dodw / 2 + (dodw / 2) * Math.cos(angle);
-        const y = dodh / 2 + (dodh / 2) * Math.sin(angle);
-        return `${x},${y}`;
-      }).join(" ");
+      const dodecPoints = Array.from({ length: 12 })
+        .map((_, i) => {
+          const angle = (Math.PI / 6) * i;
+          const x = dodw / 2 + (dodw / 2) * Math.cos(angle);
+          const y = dodh / 2 + (dodh / 2) * Math.sin(angle);
+          return `${x},${y}`;
+        })
+        .join(" ");
 
       return (
         <svg width={dodw} height={dodh}>
@@ -156,19 +166,43 @@ function Shape({ type, color, dimensions }) {
         { x: sw * 0.2, y: sh },
         { x: sw * 0.3, y: sh * 0.6 },
         { x: 0, y: sh * 0.35 },
-        { x: sw * 0.4, y: sh * 0.35 }
-      ].map(p => `${p.x},${p.y}`).join(" ");
+        { x: sw * 0.4, y: sh * 0.35 },
+      ]
+        .map((p) => `${p.x},${p.y}`)
+        .join(" ");
 
       return (
         <svg width={sw} height={sh}>
           <polygon points={starPoints} fill={color} />
         </svg>
       );
+    case "triangle":
+      const triW = dimensions.width;
+      const triH = dimensions.height;
+      const triPoints = [
+        { x: triW / 2, y: 0 },
+        { x: triW, y: triH },
+        { x: 0, y: triH },
+      ]
+        .map((p) => `${p.x},${p.y}`)
+        .join(" ");
+
+      return (
+        <svg width={triW} height={triH}>
+          <polygon points={triPoints} fill={color} />
+        </svg>
+      );
 
     case "ellipse":
       return (
         <svg width={dimensions.width * 2} height={dimensions.height}>
-          <ellipse cx={dimensions.width} cy={dimensions.height / 2} rx={dimensions.width} ry={dimensions.height / 2} fill={color} />
+          <ellipse
+            cx={dimensions.width}
+            cy={dimensions.height / 2}
+            rx={dimensions.width}
+            ry={dimensions.height / 2}
+            fill={color}
+          />
         </svg>
       );
     case "hexagon":
@@ -191,20 +225,23 @@ function Shape({ type, color, dimensions }) {
           <polygon points={hexPoints} fill={color} />
         </svg>
       );
-      case "triangle":
+    case "triangle":
       const tw = dimensions.width;
       const th = dimensions.height;
       const trianglePoints = [
         { x: tw / 2, y: 0 },
         { x: tw, y: th },
-        { x: 0, y: th }
-      ].map(p => `${p.x},${p.y}`).join(" ");
+        { x: 0, y: th },
+      ]
+        .map((p) => `${p.x},${p.y}`)
+        .join(" ");
 
       return (
         <svg width={tw} height={th}>
           <polygon points={trianglePoints} fill={color} />
         </svg>
       );
+
     default:
       return null;
   }

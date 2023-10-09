@@ -58,7 +58,7 @@ function randomizePosition(shapeWidth, shapeHeight, existingShapes) {
     return { x: shape.x, y: shape.y };
 }
 
-function GameLevel4() {
+function GameLevel7() {
     const [gameActive, setGameActive] = useState(true);
     const [startTime, setStartTime] = useState(Date.now());
     const [correctMatches, setCorrectMatches] = useState(0);
@@ -164,6 +164,54 @@ function GameLevel4() {
         targetWidth: 120,
         targetHeight: 120,
       },
+      {
+        id: 14,
+        type: "nonagon",
+        color: "#B1A1F7",
+        size: "small",
+        width: 60,
+        height: 60,
+      },
+      {
+        id: 15,
+        type: "nonagon",
+        color: "#B1A1F7",
+        size: "large",
+        targetWidth: 120,
+        targetHeight: 120,
+      }, 
+      {
+        id: 16,
+        type: "star",
+        color: "#E1E15A",
+        size: "small",
+        width: 60,
+        height: 60,
+      },
+      {
+        id: 17,
+        type: "star",
+        color: "#E1E15A",
+        size: "large",
+        targetWidth: 100,
+        targetHeight: 100,
+      },  
+      {
+        id: 18,
+        type: "ellipse",
+        color: "#088F8F",
+        size: "small",
+        width: 40,
+        height: 60,
+      },
+      {
+        id: 19,
+        type: "ellipse",
+        color: "#088F8F",
+        size: "large",
+        targetWidth: 60,
+        targetHeight: 80,
+    }   
     ];
 
 
@@ -352,7 +400,7 @@ function GameLevel4() {
 
                 {showModal && <div className="backdrop"></div>}
                 {showModal && (
-                    <Modal currentLevel={4} show={showModal}>
+                    <Modal currentLevel={7} show={showModal}>
                         <h2>Congratulations!</h2>
                         <p>You did fantastic! Ready for the next level?</p>
                         <button onClick={handleGenerateReport}>
@@ -360,11 +408,11 @@ function GameLevel4() {
                         </button>
                     </Modal>
                 )}
-              <LevelGuide key={showModal ? 'faded' : 'visible'} level={4} className={showModal ? 'faded' : ''} />
+              <LevelGuide key={showModal ? 'faded' : 'visible'} level={7} className={showModal ? 'faded' : ''} />
                 <InfoStrip startTime={startTime} correctMatches={correctMatches} incorrectAttempts={incorrectAttempts} />
             </div>
         </div>
     );
 }
 
-export default GameLevel4;
+export default GameLevel7;
