@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Game.css";
 import Shape from "./Shape";
 import { createModel, getPrediction } from "./mlModel";
 import Modal from "./Modal";
 import InfoStrip from "./InfoStrip";
 import LevelGuide from "./LevelGuide";
+import Countdown from "./Countdown";
 
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 700;
@@ -60,10 +61,22 @@ function randomizePosition(shapeWidth, shapeHeight, existingShapes) {
 
 function GameLevel2() {
     const [gameActive, setGameActive] = useState(true);
-    const [startTime, setStartTime] = useState(Date.now());
+    const [startTime, setStartTime] = useState(null);
     const [correctMatches, setCorrectMatches] = useState(0);
     const [incorrectAttempts, setIncorrectAttempts] = useState(0);
     const [model, setModel] = useState(null);
+
+      //countdown
+
+  const hasCountdownStarted = useRef(false);
+
+  const [showCountdown, setShowCountdown] = useState(true);
+  const handleCountdownEnd = () => {
+    const now = Date.now();
+    console.log("Countdown ended at:", now); // log the current time when countdown ends
+    setShowCountdown(false);
+    setStartTime(now);
+  };
 
     let initialShapes = [
         { id: 1, type: "circle", color: "#D49CDA", size: "small", r: 30 },
@@ -220,6 +233,7 @@ function GameLevel2() {
 
     return (
         <div>
+              {showCountdown && <Countdown onCountdownEnd={handleCountdownEnd} />}
             <div className="gameControls"></div>
             <div className="gameContainer">
                 <div className="flexContainer">

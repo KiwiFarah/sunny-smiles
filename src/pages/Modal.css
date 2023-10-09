@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -8,7 +10,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Roboto', sans-serif; 
 }
 
 .modalContent {
@@ -48,13 +50,14 @@ h1 {
 }
 
 p {
-    font-weight: 500;          /* Medium font weight */
+    font-weight: 400;          /* Medium font weight */
     font-size: 20px;           /* Slightly increased font size */
     color: #555;               /* Neutral gray color */
     margin-bottom: 20px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05); /* Very subtle text shadow for a bit of depth */
     line-height: 1.4;         /* Improved line height for better readability */
-    letter-spacing: 0.3px;    /* Slightly increased letter spacing for better readability */
+    letter-spacing: 0.3px;   
+    font-family: 'Roboto', sans-serif;  /* Slightly increased letter spacing for better readability */
 }
 
 
