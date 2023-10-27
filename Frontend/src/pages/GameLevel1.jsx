@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Game.css";
 import Shape from "./Shape";
-import { createModel, getPrediction } from "./mlModel";
+import { createModel, getPrediction } from "../../../Backend/mlModel.js";
 import Modal from "./Modal";
 import InfoStrip from "./InfoStrip";
 import LevelGuide from "./LevelGuide";
