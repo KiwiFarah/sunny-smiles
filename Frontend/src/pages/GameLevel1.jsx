@@ -7,6 +7,7 @@ import InfoStrip from "./InfoStrip";
 import LevelGuide from "./LevelGuide";
 import NameModal from "./NameModal";
 import Countdown from "./Countdown";
+import { addUserData } from '../utils/api';
 
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 700;
@@ -71,7 +72,6 @@ function GameLevel1({ username, onUsernameSet }) {
   //countdown
 
   const hasCountdownStarted = useRef(false);
-
   const [showCountdown, setShowCountdown] = useState(false);
   const handleCountdownEnd = () => {
     const now = Date.now();
@@ -85,6 +85,15 @@ function GameLevel1({ username, onUsernameSet }) {
   const [correctMatches, setCorrectMatches] = useState(0);
   const [incorrectAttempts, setIncorrectAttempts] = useState(0);
   const [model, setModel] = useState(null);
+
+  
+  useEffect(() => {
+    async function loadModel() {
+      const loadedModel = await createModel();
+      setModel(loadedModel);
+    }
+    loadModel();
+  }, []);
 
   let initialShapes = [
     { id: 1, type: "circle", color: "#D49CDA", size: "small", r: 30 },
@@ -161,25 +170,49 @@ function GameLevel1({ username, onUsernameSet }) {
   const [showModal, setShowModal] = useState(false);
   const [potentialDropTargets, setPotentialDropTargets] = useState([]);
 
+
   useEffect(() => {
     if (shapes.filter((shape) => shape.size === "small").length === 0) {
+      const timeTaken = (Date.now() - startTime) / 1000;
       setGameActive(false);
       setShowModal(true);
+  
+      // Prepare the game data
+      const userData = {
+        username, // Include the username here
+        timeTaken,
+        correctMatches,
+        incorrectAttempts,
+        level : 1
+      };
+  
+      // Send the data to the backend
+      addUserData(userData) // Call the function with the correct data structure
+        .then(response => {
+          console.log("Data saved successfully:", response);
+        })
+        .catch(error => {
+          console.error("Error saving data:", error);
+        });
     }
-  }, [shapes]);
+  }, [shapes, startTime, correctMatches, incorrectAttempts, username]);
+  
+  
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
-  const handleGenerateReport = () => {
+  const handleGenerateReport = async () => {
+    console.log("Generating report...");
     setShowModal(false);
+    const report = generateReport();
+    console.log("Report:", report);
+    await addUserData(username, report); // Assuming you want to save the report data to a backend
   };
-
+  
   const handleDragStart = (event, shapeId) => {
     event.dataTransfer.setData("shapeId", shapeId);
     const draggableShape = shapes.find((s) => s.id === shapeId);
-
     const validTargets = shapes
       .filter(
         (targetShape) =>
@@ -335,6 +368,7 @@ function GameLevel1({ username, onUsernameSet }) {
       predictedImprovement: prediction,
     };
   };
+  
 
   return (
     <div>
@@ -408,9 +442,11 @@ function GameLevel1({ username, onUsernameSet }) {
           <Modal currentLevel={1} show={showModal}>
             <h2>Congratulations!</h2>
             <p>You did fantastic! Ready for the next level?</p>
-            <button onClick={handleGenerateReport}>
+            <button onClick={() => alert('Button clicked!')}>Test Button</button>
+
+            {/* <button onClick={handleGenerateReport}>
               Generate Analysis Report
-            </button>
+            </button> */}
           </Modal>
         )}
         <LevelGuide level={1} className={showModal ? "faded" : ""} />
