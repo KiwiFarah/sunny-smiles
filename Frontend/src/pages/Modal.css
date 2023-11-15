@@ -164,3 +164,22 @@ p {
     padding-top: 10px; /* Extra space for better look */
     border-top: 4px solid #eee; /* A subtle line to separate the buttons from the text above */
 }
+/* Class for centering the generate report button */
+.centerButton {
+    justify-content: center; /* Centers the button horizontally */
+}
+
+/* Adjustments to .buttonGroup when only one button is present */
+.centerButton .generateReportButton {
+    margin-right: 0; /* Remove margin-right when it's the only button */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+    .centerButton {
+        flex-direction: column; /* Stack buttons vertically on smaller screens */
+    }
+    .centerButton .generateReportButton {
+        margin-bottom: 10px; /* Add some space between buttons */
+    }
+}

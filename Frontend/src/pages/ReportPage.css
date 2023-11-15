@@ -1,0 +1,80 @@
+/* Wrapper class for centering */
+.centeredContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full viewport height */
+    padding: 20px;
+    background-color: #f4f4f4; /* Light grey background */
+}
+
+/* Report Page styles */
+.reportPage {
+    font-family: 'Roboto', sans-serif;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    margin: 0 auto;
+    width: 80%;
+    max-width: 700px;
+}
+
+.reportPage h1 {
+    color:#d63031; /* Darker color for more contrast */
+    font-size: 36px; /* Slightly larger font size */
+    font-weight: 500px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.reportPage p {
+    color: #444; /* Slightly darker text for better readability */
+    font-size: 18px;
+    line-height: 1.8; /* Increased line height for readability */
+    margin-bottom: 18px;
+    text-align: center; /* Justified text alignment for a cleaner look */
+}
+
+/* Button styling */
+.reportPage button {
+    background: linear-gradient(45deg, #FFA07A, #D49CDA);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 24px; /* Slightly larger padding for a better touch area */
+    font-size: 17px; /* Slightly larger font size */
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: block;
+    margin: 25px auto; /* Increased margin for more spacing */
+    text-align: center;
+}
+
+.reportPage button:hover {
+    background: linear-gradient(45deg, #FF6347, #D273C9);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+    .reportPage {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .reportPage h1 {
+        font-size: 28px;
+    }
+
+    .reportPage p {
+        font-size: 16px;
+    }
+
+    .reportPage button {
+        padding: 10px 20px;
+        font-size: 15px;
+    }
+}

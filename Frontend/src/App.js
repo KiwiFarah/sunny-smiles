@@ -27,14 +27,14 @@ function App() {
             <div className="App">
                 <Routes>
                 <Route path="/login" element={<Login/>} />
-                <Route path="/level-one" element={<GameLevel1 username={username} onUsernameSet={setUsername} />} />
+                <Route path="/level-one" element={<GameLevel1 username={username} onUsernameSet={setUsername} onLevelComplete={() => setCurrentLevel(2)}/>} />
                 {!username && <Route path="/" element={<NameModal onNameConfirmation={setUsername} />} />}
-                <Route path="/level-two" element={<GameLevel2 username={username} />} />
-                <Route path="/level-three" element={<GameLevel3 username={username}/>} />
-                <Route path="/level-four" element={<GameLevel4 username={username}/>} />
-                <Route path="/level-five" element={<GameLevel5 username={username}/>} />
-                <Route path="/level-six" element={<GameLevel6 username={username}/>} />
-                <Route path="/level-seven" element={<GameLevel7 username={username}/>} />
+                <Route path="/level-two" element={<GameLevel2 username={username} currentLevel={2}/>} />
+                <Route path="/level-three" element={<GameLevel3 username={username} currentLevel={3} />} />
+                <Route path="/level-four" element={<GameLevel4 username={username} currentLevel={4}/>} />
+                <Route path="/level-five" element={<GameLevel5 username={username} currentLevel={5}/>} />
+                <Route path="/level-six" element={<GameLevel6 username={username} currentLevel={6}/>} />
+                <Route path="/level-seven" element={<GameLevel7 username={username} currentLevel={7}/>} />
                 <Route path="/report" element={<ReportPage username={username} currentLevel={currentLevel} />} />
                 </Routes>       
             </div>

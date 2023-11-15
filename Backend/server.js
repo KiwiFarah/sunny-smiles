@@ -6,6 +6,7 @@ const cors = require('cors');
 const UserData = require('./models/userData');
 const { getPrediction, loadModel } = require('./loadModel');
 
+
 const app = express();
 const PORT = 3000;
 

@@ -12,14 +12,17 @@ export const addUserData = async (data) => {
     }
   };
   
-export const getUserDataReport = async (username, level) => {
+  export const getUserDataReport = async (username) => {
     try {
-        const response = await axios.get(`${BASE_URL}/userdata/latest/${username}/${level}`);
+        // Fetch the latest game data for the user
+        const response = await axios.get(`${BASE_URL}/userdata/latest/${username}`);
         return response.data;
     } catch (error) {
         throw error;
     }
 };
+
+
 
 export const getPrediction = async (level) => {
     try {

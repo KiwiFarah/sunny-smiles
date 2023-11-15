@@ -1,21 +1,32 @@
+// backend/loadModel.js
 const tf = require('@tensorflow/tfjs-node');
 
-let model;
+let trainedModel;
 
 const loadModel = async () => {
-  model = await tf.loadLayersModel('file://./model/model.json');
+    try {
+        // Assuming the model is saved in the 'model' directory
+        trainedModel = await tf.loadLayersModel('file://./model/model.json');
+        console.log("Model loaded successfully.");
+    } catch (error) {
+        console.error("Error loading the model: ", error);
+    }
 };
 
 const getPrediction = async (level) => {
-  if (!model) {
-    await loadModel(); // Load model if it's not already loaded
-  }
-  const inputTensor = tf.tensor2d([[level]]);
-  const prediction = model.predict(inputTensor);
-  return prediction.dataSync()[0]; // Return the predicted reaction time per shape
+    if (!trainedModel) {
+        console.error("Model not loaded.");
+        return null;
+    }
+
+    try {
+        const inputTensor = tf.tensor2d([[level]]);
+        const prediction = trainedModel.predict(inputTensor).dataSync()[0];
+        return prediction;
+    } catch (error) {
+        console.error("Error making prediction: ", error);
+        return null;
+    }
 };
 
-module.exports = {
-  getPrediction,
-  loadModel
-};
+module.exports = { loadModel, getPrediction };

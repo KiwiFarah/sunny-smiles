@@ -43,6 +43,7 @@ function Modal({ show, onClose, onGenerateReport, currentLevel }) {
     navigate('/report'); 
   };
 
+  const buttonGroupClass = currentLevel === 7 ? "buttonGroup centerButton" : "buttonGroup";
 
   return (
     <div className="modalOverlay">
@@ -51,13 +52,15 @@ function Modal({ show, onClose, onGenerateReport, currentLevel }) {
         <img src={logo} alt="Logo" className="modalLogo" />
         <h1>Congratulations!</h1>
         <p>You did fantastic! Ready for the next level?</p>
-        <div className="buttonGroup">
+        <div className={buttonGroupClass}>
           <button className="generateReportButton" onClick={handleGenerateReport}>
             Generate Report
           </button>
-          <button className="nextLevelButton" onClick={handleNextLevel}>
-            Next Level <ArrowForwardIcon />
-          </button>
+          {currentLevel < 7 && (
+            <button className="nextLevelButton" onClick={handleNextLevel}>
+              Next Level <ArrowForwardIcon />
+            </button>
+          )}
         </div>
       </div>
     </div>

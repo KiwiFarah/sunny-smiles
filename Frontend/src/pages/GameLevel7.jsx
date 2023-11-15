@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Game.css";
 import Shape from "./Shape";
-import { createModel, getPrediction } from "./mlModel";
 import Modal from "./Modal";
 import InfoStrip from "./InfoStrip";
 import LevelGuide from "./LevelGuide";
 import Countdown from "./Countdown";
-import { addUserData } from '../utils/api';
+import { addUserData, getPrediction } from '../utils/api'
 
 
 const CANVAS_WIDTH = 1000;
@@ -264,31 +263,38 @@ function GameLevel7({username}) {
   const [showModal, setShowModal] = useState(false);
   const [potentialDropTargets, setPotentialDropTargets] = useState([]);
 
+
   useEffect(() => {
-    if (shapes.filter((shape) => shape.size === "small").length === 0) {
-        const timeTaken = (Date.now() - startTime) / 1000;
-        setGameActive(false);
-        setShowModal(true);
-
-        // Prepare the game data
-        const userData = {
-            username,
-            timeTaken,
-            correctMatches,
-            incorrectAttempts,
-            level: 7
-        };
-
-        // Send the data to the backend
-        addUserData(userData) // Call the function with the correct data structure
-            .then(response => {
-                console.log("Data saved successfully:", response);
+    if (shapes.filter(shape => shape.size === "small").length === 0) {
+      const timeTaken = (Date.now() - startTime) / 1000;
+      setGameActive(false);
+      setShowModal(true);
+  
+      const userData = {
+        username,
+        timeTaken,
+        correctMatches,
+        incorrectAttempts,
+        level: 7
+      };
+  
+      // Send the game data to the backend
+      addUserData(userData)
+        .then(response => {
+          console.log("Data saved successfully:", response);
+  
+          // Request prediction from the backend
+          getPrediction(userData.level + 1)
+            .then(predictionResponse => {
+              console.log("Prediction for next level:", predictionResponse.predictedReactionTimePerShape);
+              // Here you can handle the prediction response as needed
             })
-            .catch(error => {
-                console.error("Error saving data:", error);
-            });
+            .catch(error => console.error("Error getting prediction:", error));
+        })
+        .catch(error => console.error("Error saving data:", error));
     }
-}, [shapes, startTime, correctMatches, incorrectAttempts, username]);
+  }, [shapes, startTime, correctMatches, incorrectAttempts, username]);
+
   const handleCloseModal = () => {
     setShowModal(false);
   };
