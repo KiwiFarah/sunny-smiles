@@ -1,50 +1,42 @@
 const tf = require('@tensorflow/tfjs');
 
-const generateDummyData = (numData = 100) => {
-    let xs = [];
-    let ys = [];
-
-    for (let i = 0; i < numData; i++) {
-        const timeTaken = 300 + (Math.random() - 0.5) * 50; 
-        const correctMatches = 5 + Math.floor((Math.random() - 0.5) * 4); 
-        const incorrectAttempts = 2 + Math.floor((Math.random() - 0.5) * 2); 
-        const y = 1 / (1 + Math.exp(-(correctMatches - 2*incorrectAttempts))); 
-
-        xs.push([timeTaken, correctMatches, incorrectAttempts]);
-        ys.push([y]);
-    }
-
-    return {
-        xs: tf.tensor2d(xs),
-        ys: tf.tensor2d(ys),
-    };
+// Assuming you have the actual data in the format: [timeTaken, shapesMatched, level]
+const processData = (data) => {
+    return data.map(d => {
+        const reactionTimePerShape = d[0] / d[1]; // Calculate reaction time per shape
+        return [reactionTimePerShape, d[2]]; // [reactionTimePerShape, level]
+    });
 };
 
-const createModel = async () => {
+export const createModel = () => {
     const model = tf.sequential();
-    model.add(tf.layers.dense({ units: 1, inputShape: [3] }));
+
+    // Adding layers: input layer, hidden layers, and output layer
+    model.add(tf.layers.dense({ units: 64, activation: 'relu', inputShape: [2] }));
+    model.add(tf.layers.dense({ units: 32, activation: 'relu' }));
+    model.add(tf.layers.dense({ units: 1 }));
+
     model.compile({
         loss: 'meanSquaredError',
-        optimizer: 'sgd'
+        optimizer: 'adam'
     });
-
-    const { xs, ys } = generateDummyData();
-    await model.fit(xs, ys, { epochs: 50 });
 
     return model;
 };
-module.exports.createModel = createModel;
 
+const trainModel = async (model, data) => {
+    const processedData = processData(data);
+    const xs = tf.tensor2d(processedData.map(d => [d[1]])); // Levels as input
+    const ys = tf.tensor2d(processedData.map(d => [d[0]])); // Reaction time as output
 
-const getPrediction = (model, timeTaken, correctMatches, incorrectAttempts) => {
+    await model.fit(xs, ys, { epochs: 100 });
+};
+const getPrediction = (model, level) => {
     if (!model) return null;
     
-    const inputTensor = tf.tensor2d([
-        [timeTaken, correctMatches, incorrectAttempts]
-    ]);
-    
+    const inputTensor = tf.tensor2d([[level]]);
     const prediction = model.predict(inputTensor).dataSync();
-    return prediction[0];
+    
+    return prediction[0]; // Predicted reaction time per shape for given level
 };
 
-module.exports.getPrediction = getPrediction;

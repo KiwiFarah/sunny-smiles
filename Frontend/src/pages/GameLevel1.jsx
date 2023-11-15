@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Game.css";
 import Shape from "./Shape";
-import { createModel, getPrediction } from "../../../Backend/mlModel.js";
+import { createModel, getPrediction } from "./mlModel";
 import Modal from "./Modal";
 import InfoStrip from "./InfoStrip";
 import LevelGuide from "./LevelGuide";
@@ -62,6 +62,7 @@ function randomizePosition(shapeWidth, shapeHeight, existingShapes) {
 }
 
 function GameLevel1({ username, onUsernameSet }) {
+  
   const handleNameConfirmation = (name) => {
     onUsernameSet(name);
     if (!hasCountdownStarted.current) {
@@ -179,7 +180,7 @@ function GameLevel1({ username, onUsernameSet }) {
   
       // Prepare the game data
       const userData = {
-        username, // Include the username here
+        username, 
         timeTaken,
         correctMatches,
         incorrectAttempts,
@@ -444,9 +445,6 @@ function GameLevel1({ username, onUsernameSet }) {
             <p>You did fantastic! Ready for the next level?</p>
             <button onClick={() => alert('Button clicked!')}>Test Button</button>
 
-            {/* <button onClick={handleGenerateReport}>
-              Generate Analysis Report
-            </button> */}
           </Modal>
         )}
         <LevelGuide level={1} className={showModal ? "faded" : ""} />

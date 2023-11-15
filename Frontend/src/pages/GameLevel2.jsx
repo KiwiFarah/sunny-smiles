@@ -6,6 +6,8 @@ import Modal from "./Modal";
 import InfoStrip from "./InfoStrip";
 import LevelGuide from "./LevelGuide";
 import Countdown from "./Countdown";
+import { addUserData } from '../utils/api';
+
 
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 700;
@@ -59,7 +61,7 @@ function randomizePosition(shapeWidth, shapeHeight, existingShapes) {
     return { x: shape.x, y: shape.y };
 }
 
-function GameLevel2() {
+function GameLevel2({username}) {
     const [gameActive, setGameActive] = useState(true);
     const [startTime, setStartTime] = useState(null);
     const [correctMatches, setCorrectMatches] = useState(0);
@@ -122,10 +124,29 @@ function GameLevel2() {
 
     useEffect(() => {
         if (shapes.filter((shape) => shape.size === "small").length === 0) {
+            const timeTaken = (Date.now() - startTime) / 1000;
             setGameActive(false);
             setShowModal(true);
+
+            // Prepare the game data
+            const userData = {
+                username,
+                timeTaken,
+                correctMatches,
+                incorrectAttempts,
+                level: 2
+            };
+
+            // Send the data to the backend
+            addUserData(userData) // Call the function with the correct data structure
+                .then(response => {
+                    console.log("Data saved successfully:", response);
+                })
+                .catch(error => {
+                    console.error("Error saving data:", error);
+                });
         }
-    }, [shapes]);
+    }, [shapes, startTime, correctMatches, incorrectAttempts, username]);
 
     const handleCloseModal = () => {
         setShowModal(false);

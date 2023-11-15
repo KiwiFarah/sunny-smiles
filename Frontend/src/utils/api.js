@@ -12,12 +12,21 @@ export const addUserData = async (data) => {
     }
   };
   
-
-export const getUserDataReport = async () => {
+export const getUserDataReport = async (username, level) => {
     try {
-        const response = await axios.get(`${BASE_URL}/userdata/report`);
+        const response = await axios.get(`${BASE_URL}/userdata/latest/${username}/${level}`);
         return response.data;
     } catch (error) {
         throw error;
     }
 };
+
+export const getPrediction = async (level) => {
+    try {
+      const response = await axios.post(`http://localhost:3000/api/predict`, { level });
+      return response.data.predictedReactionTimePerShape;
+    } catch (error) {
+      console.error("Error fetching prediction", error);
+      throw error;
+    }
+  };

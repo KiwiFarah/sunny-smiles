@@ -39,6 +39,10 @@ function Modal({ show, onClose, onGenerateReport, currentLevel }) {
 
     navigate(nextLevelRoute);
   };
+  const handleGenerateReport = () => {
+    navigate('/report'); 
+  };
+
 
   return (
     <div className="modalOverlay">
@@ -48,7 +52,7 @@ function Modal({ show, onClose, onGenerateReport, currentLevel }) {
         <h1>Congratulations!</h1>
         <p>You did fantastic! Ready for the next level?</p>
         <div className="buttonGroup">
-          <button className="generateReportButton" onClick={onGenerateReport}>
+          <button className="generateReportButton" onClick={handleGenerateReport}>
             Generate Report
           </button>
           <button className="nextLevelButton" onClick={handleNextLevel}>

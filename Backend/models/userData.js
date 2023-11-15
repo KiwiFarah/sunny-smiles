@@ -18,10 +18,6 @@ const UserData = sequelize.define('UserData', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    predictedImprovement: {
-        type: DataTypes.FLOAT,
-        allowNull: true
-    },
     level: {
         type: DataTypes.INTEGER,
         allowNull: false
