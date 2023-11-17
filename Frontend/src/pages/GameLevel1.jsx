@@ -69,6 +69,7 @@ function GameLevel1({ username, onUsernameSet  }) {
       hasCountdownStarted.current = true;
     }
   };
+  
   //countdown
 
   const hasCountdownStarted = useRef(false);
@@ -169,6 +170,18 @@ function GameLevel1({ username, onUsernameSet  }) {
   const [positions, setPositions] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [potentialDropTargets, setPotentialDropTargets] = useState([]);
+  // This function should be called when a level is completed
+const saveLevelData = (username, level, actualTime, predictedTime) => {
+  // Retrieve existing data or initialize if not present
+  const userData = JSON.parse(localStorage.getItem(username)) || {};
+
+  // Update the data for the specific level
+  userData[level] = { actualTime, predictedTime };
+
+  // Save the updated data back to local storage
+  localStorage.setItem(username, JSON.stringify(userData));
+};
+
 
 
   useEffect(() => {
@@ -193,15 +206,16 @@ function GameLevel1({ username, onUsernameSet  }) {
           // Request prediction from the backend
           getPrediction(userData.level + 1)
             .then(predictionResponse => {
-              console.log("Prediction for next level:", predictionResponse.predictedReactionTimePerShape);
-              // Here you can handle the prediction response as needed
+              console.log("Prediction for next level:", predictionResponse);
+              
+              // Save level data to local storage
+              saveLevelData(username, 1, timeTaken / correctMatches, predictionResponse);
             })
             .catch(error => console.error("Error getting prediction:", error));
         })
         .catch(error => console.error("Error saving data:", error));
     }
   }, [shapes, startTime, correctMatches, incorrectAttempts, username]);
-  
   
 
   const handleCloseModal = () => {
