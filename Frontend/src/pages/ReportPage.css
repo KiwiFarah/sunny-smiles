@@ -21,7 +21,7 @@
 }
 
 .reportPage h1 {
-    color:#d63031; /* Darker color for more contrast */
+    color:#444; /* Darker color for more contrast */
     font-size: 36px; /* Slightly larger font size */
     font-weight: 500px;
     margin-bottom: 25px;

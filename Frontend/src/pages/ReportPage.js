@@ -2,17 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUserDataReport, getPrediction } from '../utils/api';
 import './ReportPage.css';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 function ReportPage({ username }) {
   const navigate = useNavigate();
   const [reportData, setReportData] = useState(null);
   const [predictedTime, setPredictedTime] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [chartData, setChartData] = useState({});
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     const fetchReportData = async () => {
@@ -40,28 +37,12 @@ function ReportPage({ username }) {
     if (reportData && reportData.level === 7) {
       const userData = JSON.parse(localStorage.getItem(username)) || {};
       const levels = Object.keys(userData).map(Number).sort((a, b) => a - b);
-      const actualTimes = levels.map(level => userData[level].actualTime);
-      const predictedTimes = levels.map(level => userData[level].predictedTime);
-
-      setChartData({
-        labels: levels.map(level => `Level ${level}`),
-        datasets: [
-          {
-            label: 'Actual Reaction Time',
-            data: actualTimes,
-            borderColor: 'blue',
-            backgroundColor: 'rgba(0, 0, 255, 0.5)',
-            fill: false,
-          },
-          {
-            label: 'Predicted Reaction Time',
-            data: predictedTimes,
-            borderColor: 'red',
-            backgroundColor: 'rgba(255, 0, 0, 0.5)',
-            fill: false,
-          },
-        ],
-      });
+      const data = levels.map(level => ({
+        level: `Level ${level}`,
+        Actual: userData[level].actualTime,
+        Predicted: userData[level].predictedTime
+      }));
+      setChartData(data);
     }
   }, [reportData, username]);
 
@@ -109,19 +90,18 @@ function ReportPage({ username }) {
           </>
         )}
 
-        {reportData && reportData.level === 7 && chartData.labels && (
+{reportData && reportData.level === 7 && chartData.length > 0 && (
           <>
-            <p><strong>Recommendations:</strong> Continue practicing for further skill development.</p>
-            <Line 
-              data={chartData}
-              options={{
-                responsive: true,
-                scales: {
-                  x: { title: { display: true, text: 'Level' } },
-                  y: { title: { display: true, text: 'Reaction Time (seconds)' } }
-                }
-              }}
-            />
+            <LineChart width={600} height={300} data={chartData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="level" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="Actual" stroke="#0000FF" />
+              <Line type="monotone" dataKey="Predicted" stroke=" #FF0000" />
+            </LineChart>
           </>
         )}
       </div>
