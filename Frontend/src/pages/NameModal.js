@@ -15,7 +15,7 @@ function NameModal({ onClose }) {
         } else {
             console.error('onClose is not a function:', onClose);
         }
-        navigate('/level-one'); // Navigate to GameLevel1
+        navigate('/'); // Navigate to GameLevel1
     } else {
         alert('Please enter your name.');
     }

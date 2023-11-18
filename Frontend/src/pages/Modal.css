@@ -110,13 +110,13 @@ p {
     margin-left: 5px;
     vertical-align: middle;
 }
+
 .buttonGroup {
     display: flex;
-    justify-content: space-between;
-    align-items: center; /* This ensures all children are vertically centered */
+    justify-content: flex-end; /* Align buttons to the right */
+    align-items: center;
     margin-top: 20px;
 }
-
 .generateReportButton, .nextLevelButton {
     flex: 0 0 auto;
     display: flex;
@@ -156,13 +156,12 @@ p {
     margin-left: 5px;
 }
 
+
 .buttonGroup {
     display: flex;
-    justify-content: space-between;
-    align-items: center; /* Vertically centers children */
-    margin-top: 20px; /* Space between the text and buttons */
-    padding-top: 10px; /* Extra space for better look */
-    border-top: 4px solid #eee; /* A subtle line to separate the buttons from the text above */
+    justify-content: flex-end; /* Align buttons to the right */
+    align-items: center;
+    margin-top: 20px;
 }
 /* Class for centering the generate report button */
 .centerButton {
@@ -181,5 +180,13 @@ p {
     }
     .centerButton .generateReportButton {
         margin-bottom: 10px; /* Add some space between buttons */
+    }
+    .buttonGroup {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .nextLevelButton {
+        float: none;
+        width: 100%;
     }
 }

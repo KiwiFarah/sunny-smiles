@@ -3,78 +3,149 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Full viewport height */
     padding: 20px;
-    background-color: #f4f4f4; /* Light grey background */
-}
+    background-color: #f4f4f4;
+  }
 
 /* Report Page styles */
 .reportPage {
-    font-family: 'Roboto', sans-serif;
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1); /* Softer shadow */
-    margin: 0 auto;
-    width: 80%;
-    max-width: 700px;
+  font-family: "Open Sans", sans-serif;
+  background-color: #fff;
+  padding-top: 20px;
+  position: relative;
+  padding-left:25px;
+  padding-right:25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  width: 80%;
+  max-width: 90%; 
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .reportPage h1 {
-    color:#444; /* Darker color for more contrast */
-    font-size: 36px; /* Slightly larger font size */
-    font-weight: 500px;
-    margin-bottom: 25px;
-    text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 700px;
+  font-size: 2rem;
 }
 
-.reportPage p {
-    color: #444; /* Slightly darker text for better readability */
-    font-size: 18px;
-    line-height: 1.8; /* Increased line height for readability */
-    margin-bottom: 18px;
-    text-align: center; /* Justified text alignment for a cleaner look */
+.reportPage p,
+.report-analysis,
+.recommendations {
+  color: #444;
+  font-size: 1rem;
+  line-height: 1.6;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.report-analysis pre,
+.recommendations pre {
+  background-color: #f8f8f8;
+  padding: 15px;
+  border-radius: 5px;
+  border-left: 5px solid #4caf50;
+  font-family: monospace;
+  overflow-x: auto;
+  margin-bottom: 20px; /* Add spacing below the pre tag */
 }
 
 /* Button styling */
 .reportPage button {
-    background: linear-gradient(45deg, #FFA07A, #D49CDA);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 12px 24px; /* Slightly larger padding for a better touch area */
-    font-size: 17px; /* Slightly larger font size */
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    display: block;
-    margin: 25px auto; /* Increased margin for more spacing */
-    text-align: center;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  display: block;
+  margin: 25px auto;
 }
 
 .reportPage button:hover {
-    background: linear-gradient(45deg, #FF6347, #D273C9);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
+  background-color: #45a049;
 }
 
-/* Responsive design for smaller screens */
-@media (max-width: 600px) {
-    .reportPage {
-        width: 95%;
-        padding: 20px;
-    }
+/* Title and introduction adjustments */
+.reportTitle,
+.reportIntroduction {
+  text-align: center;
+  font-family: "Open Sans", sans-serif;
+}
 
-    .reportPage h1 {
-        font-size: 28px;
-    }
+.reportAnalysis h2, .recommendations h2 {
+    text-align: center; /* Centers the headings */
+  }
 
-    .reportPage p {
-        font-size: 16px;
-    }
+.reportIntroduction {
+  margin-bottom: 40px;
+}
+.downloadPdfButton {
+    position: absolute;
+    top: 1px;
+    right: 20px;
+    /* Add other styling as needed */
+  }
 
-    .reportPage button {
-        padding: 10px 20px;
-        font-size: 15px;
-    }
+  
+.recharts-wrapper {
+    margin:auto;
+  }
+/* Flex container for the analysis and recommendations */
+.analysisContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px; /* Spacing below the analysis sections */
+}
+
+/* Flex children for the analysis and recommendations */
+.reportAnalysis,
+.recommendations {
+  flex: 1; /* Each child will take up half the width of the container */
+  padding: 0 10px; /* Add some padding on the sides */
+}
+
+/* Bullet points styling */
+.analysisList {
+  list-style: none; /* Remove default list style */
+  padding-left: 0; /* Remove default padding */
+}
+
+.analysisList li {
+  padding-left: 20px; /* Space for checkmark */
+  position: relative; /* Positioning for pseudo-element */
+  margin-bottom: 10px; /* Add spacing between list items */
+}
+
+.analysisList .checkmark {
+  color: #4caf50; /* Green color for checkmark */
+  font-weight: bold; /* Bold checkmark */
+  margin-right: 5px; /* Space between checkmark and text */
+}
+
+.reportAnalysis,
+.recommendations,
+.report-analysis,
+.recommendations {
+  font-family: "Open Sans", sans-serif;
+  color: #444;
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  /* For medium screens, stack the analysis and recommendations on top of each other */
+  .analysisContainer {
+    flex-direction: column;
+  }
+
+  .reportAnalysis,
+  .recommendations {
+    padding: 0; /* Remove padding on smaller screens */
+  }
 }

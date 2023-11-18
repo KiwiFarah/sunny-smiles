@@ -8,6 +8,7 @@ import NameModal from "./NameModal";
 import Countdown from "./Countdown";
 import { addUserData, getPrediction } from '../utils/api'
 
+
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 700;
 
@@ -171,19 +172,21 @@ function GameLevel1({ username, onUsernameSet  }) {
   const [showModal, setShowModal] = useState(false);
   const [potentialDropTargets, setPotentialDropTargets] = useState([]);
   // This function should be called when a level is completed
-const saveLevelData = (username, level, actualTime, predictedTime) => {
-  // Retrieve existing data or initialize if not present
-  const userData = JSON.parse(localStorage.getItem(username)) || {};
-
-  // Update the data for the specific level
-  userData[level] = { actualTime, predictedTime };
-
-  // Save the updated data back to local storage
-  localStorage.setItem(username, JSON.stringify(userData));
-};
-
-
-
+  const saveLevelData = (username, level, actualTime, predictedTime, correctMatches, incorrectAttempts) => {
+    // Retrieve existing data or initialize if not present
+    const userData = JSON.parse(localStorage.getItem(username)) || {};
+  
+    // Update the data for the specific level
+    userData[level] = { 
+      actualTime, 
+      predictedTime, 
+      correctMatches, 
+      incorrectAttempts 
+    };
+  
+    // Save the updated data back to local storage
+    localStorage.setItem(username, JSON.stringify(userData));
+  };
   useEffect(() => {
     if (shapes.filter(shape => shape.size === "small").length === 0) {
       const timeTaken = (Date.now() - startTime) / 1000;
@@ -208,8 +211,8 @@ const saveLevelData = (username, level, actualTime, predictedTime) => {
             .then(predictionResponse => {
               console.log("Prediction for next level:", predictionResponse);
               
-              // Save level data to local storage
-              saveLevelData(username, 1, timeTaken / correctMatches, predictionResponse);
+              // Save level data to local storage including correct and incorrect matches
+              saveLevelData(username, 1, timeTaken/3, predictionResponse, correctMatches, incorrectAttempts);
             })
             .catch(error => console.error("Error getting prediction:", error));
         })

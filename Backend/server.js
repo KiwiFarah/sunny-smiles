@@ -10,6 +10,8 @@ const { getPrediction, loadModel } = require('./loadModel');
 const app = express();
 const PORT = 3000;
 
+
+
 app.use(bodyParser.json());
 app.use(cors());
 

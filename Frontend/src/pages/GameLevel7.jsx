@@ -263,52 +263,57 @@ function GameLevel7({username}) {
   const [showModal, setShowModal] = useState(false);
   const [potentialDropTargets, setPotentialDropTargets] = useState([]);
 
-  const saveLevelData = (username, level, actualTime, predictedTime) => {
+  const saveLevelData = (username, level, actualTime, predictedTime, correctMatches, incorrectAttempts) => {
     // Retrieve existing data or initialize if not present
     const userData = JSON.parse(localStorage.getItem(username)) || {};
   
     // Update the data for the specific level
-    userData[level] = { actualTime, predictedTime };
+    userData[level] = { 
+      actualTime, 
+      predictedTime, 
+      correctMatches, 
+      incorrectAttempts 
+    };
   
     // Save the updated data back to local storage
     localStorage.setItem(username, JSON.stringify(userData));
   };
   
+  useEffect(() => {
+    if (shapes.filter(shape => shape.size === "small").length === 0) {
+      const timeTaken = (Date.now() - startTime) / 1000;
+      setGameActive(false);
+      setShowModal(true);
+  
+      const userData = {
+        username,
+        timeTaken,
+        correctMatches,
+        incorrectAttempts,
+        level: 7
+      };
+  
+      // Send the game data to the backend
+      addUserData(userData)
+        .then(response => {
+          console.log("Data saved successfully:", response);
+  
+          // Request prediction from the backend
+          getPrediction(userData.level + 1)
+            .then(predictionResponse => {
+              console.log("Prediction for next level:", predictionResponse);
+              
+              // Save level data to local storage including correct and incorrect matches
+              saveLevelData(username, 7, timeTaken / 9, predictionResponse, correctMatches, incorrectAttempts);
+            })
+            .catch(error => console.error("Error getting prediction:", error));
+        })
+        .catch(error => console.error("Error saving data:", error));
+    }
+  }, [shapes, startTime, correctMatches, incorrectAttempts, username]);
   
   
-    useEffect(() => {
-      if (shapes.filter(shape => shape.size === "small").length === 0) {
-        const timeTaken = (Date.now() - startTime) / 1000;
-        setGameActive(false);
-        setShowModal(true);
-    
-        const userData = {
-          username,
-          timeTaken,
-          correctMatches,
-          incorrectAttempts,
-          level: 7
-        };
-    
-        // Send the game data to the backend
-        addUserData(userData)
-          .then(response => {
-            console.log("Data saved successfully:", response);
-    
-            // Request prediction from the backend
-            getPrediction(userData.level + 1)
-              .then(predictionResponse => {
-                console.log("Prediction for next level:", predictionResponse);
-                
-                // Save level data to local storage
-                saveLevelData(username, 7, timeTaken / correctMatches, predictionResponse);
-              })
-              .catch(error => console.error("Error getting prediction:", error));
-          })
-          .catch(error => console.error("Error saving data:", error));
-      }
-    }, [shapes, startTime, correctMatches, incorrectAttempts, username]);
-    
+  
 
   const handleCloseModal = () => {
     setShowModal(false);

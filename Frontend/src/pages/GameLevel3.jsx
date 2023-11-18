@@ -12,52 +12,57 @@ const CANVAS_HEIGHT = 700;
 
 function doesOverlap(newShape, existingShapes) {
     for (let shape of existingShapes) {
+        // Collision detection for circles
         if (newShape.type === "circle" && shape.type === "circle") {
-            const distance = Math.sqrt(
-                (newShape.cx - shape.cx) ** 2 + (newShape.cy - shape.cy) ** 2
-            );
-            if (distance < (newShape.r + shape.r)) {
+            const dx = newShape.cx - shape.cx;
+            const dy = newShape.cy - shape.cy;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < newShape.r + shape.r) {
                 return true;
             }
-        } else if (newShape.type !== "circle" && shape.type !== "circle") {
-            if (
-                newShape.x < shape.x + shape.width &&
-                newShape.x + newShape.width > shape.x &&
-                newShape.y < shape.y + shape.height &&
-                newShape.y + newShape.height > shape.y
-            ) {
-                return true;
-            }
-        } else {
-            if (
-                newShape.x < shape.cx + shape.r &&
-                newShape.x + newShape.width > shape.cx - shape.r &&
-                newShape.y < shape.cy + shape.r &&
-                newShape.y + newShape.height > shape.cy - shape.r
-            ) {
+        }
+        // Collision detection for rectangles
+        else {
+            const newShapeX2 = newShape.x + (newShape.type === "circle" ? newShape.r * 2 : newShape.width);
+            const newShapeY2 = newShape.y + (newShape.type === "circle" ? newShape.r * 2 : newShape.height);
+            const shapeX2 = shape.x + (shape.type === "circle" ? shape.r * 2 : shape.width);
+            const shapeY2 = shape.y + (shape.type === "circle" ? shape.r * 2 : shape.height);
+
+            if (newShape.x < shapeX2 && newShapeX2 > shape.x && newShape.y < shapeY2 && newShapeY2 > shape.y) {
                 return true;
             }
         }
     }
     return false;
 }
-
 function randomizePosition(shapeWidth, shapeHeight, existingShapes) {
     let shape = {};
-    let tries = 0;
     const buffer = 10;
+    let tries = 0;
+    const maxTries = 100;
+
     do {
-        shape = {
-            x: buffer + Math.random() * (CANVAS_WIDTH - shapeWidth - 2 * buffer),
-            y: buffer + Math.random() * (CANVAS_HEIGHT - shapeHeight - 2 * buffer),
-            width: shapeWidth,
-            height: shapeHeight,
-        };
+        shape.x = buffer + Math.random() * (CANVAS_WIDTH - shapeWidth - 2 * buffer);
+        shape.y = buffer + Math.random() * (CANVAS_HEIGHT - shapeHeight - 2 * buffer);
+        shape.width = shapeWidth;
+        shape.height = shapeHeight;
+
+        // Additional logic for circles
+        if (shape.type === "circle") {
+            shape.cx = shape.x + shape.r;
+            shape.cy = shape.y + shape.r;
+        }
+
         tries++;
-    } while (doesOverlap(shape, existingShapes) && tries < 100);
+        if (tries > maxTries) {
+            console.error("Unable to place shape without overlap after multiple tries.");
+            return null; // or handle this scenario appropriately
+        }
+    } while (doesOverlap(shape, existingShapes));
 
     return { x: shape.x, y: shape.y };
 }
+
 
 function GameLevel3({username}) {
     const [gameActive, setGameActive] = useState(true);
@@ -194,51 +199,57 @@ function GameLevel3({username}) {
     const [showModal, setShowModal] = useState(false);
     const [potentialDropTargets, setPotentialDropTargets] = useState([]);
 
-    const saveLevelData = (username, level, actualTime, predictedTime) => {
+    const saveLevelData = (username, level, actualTime, predictedTime, correctMatches, incorrectAttempts) => {
         // Retrieve existing data or initialize if not present
         const userData = JSON.parse(localStorage.getItem(username)) || {};
       
         // Update the data for the specific level
-        userData[level] = { actualTime, predictedTime };
+        userData[level] = { 
+          actualTime, 
+          predictedTime, 
+          correctMatches, 
+          incorrectAttempts 
+        };
       
         // Save the updated data back to local storage
         localStorage.setItem(username, JSON.stringify(userData));
       };
       
+      useEffect(() => {
+        if (shapes.filter(shape => shape.size === "small").length === 0) {
+          const timeTaken = (Date.now() - startTime) / 1000;
+          setGameActive(false);
+          setShowModal(true);
+      
+          const userData = {
+            username,
+            timeTaken,
+            correctMatches,
+            incorrectAttempts,
+            level: 3
+          };
+      
+          // Send the game data to the backend
+          addUserData(userData)
+            .then(response => {
+              console.log("Data saved successfully:", response);
+      
+              // Request prediction from the backend
+              getPrediction(userData.level + 1)
+                .then(predictionResponse => {
+                  console.log("Prediction for next level:", predictionResponse);
+                  
+                  // Save level data to local storage including correct and incorrect matches
+                  saveLevelData(username, 3, timeTaken / 5, predictionResponse, correctMatches, incorrectAttempts);
+                })
+                .catch(error => console.error("Error getting prediction:", error));
+            })
+            .catch(error => console.error("Error saving data:", error));
+        }
+      }, [shapes, startTime, correctMatches, incorrectAttempts, username]);
       
       
-        useEffect(() => {
-          if (shapes.filter(shape => shape.size === "small").length === 0) {
-            const timeTaken = (Date.now() - startTime) / 1000;
-            setGameActive(false);
-            setShowModal(true);
-        
-            const userData = {
-              username,
-              timeTaken,
-              correctMatches,
-              incorrectAttempts,
-              level: 3
-            };
-        
-            // Send the game data to the backend
-            addUserData(userData)
-              .then(response => {
-                console.log("Data saved successfully:", response);
-        
-                // Request prediction from the backend
-                getPrediction(userData.level + 1)
-                  .then(predictionResponse => {
-                    console.log("Prediction for next level:", predictionResponse);
-                    
-                    // Save level data to local storage
-                    saveLevelData(username, 3, timeTaken / correctMatches, predictionResponse);
-                  })
-                  .catch(error => console.error("Error getting prediction:", error));
-              })
-              .catch(error => console.error("Error saving data:", error));
-          }
-        }, [shapes, startTime, correctMatches, incorrectAttempts, username]);
+      
         
     const handleCloseModal = () => {
         setShowModal(false);

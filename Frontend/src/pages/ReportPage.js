@@ -1,112 +1,204 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getUserDataReport, getPrediction } from '../utils/api';
-import './ReportPage.css';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getUserDataReport } from "../utils/api";
+import "./ReportPage.css";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
 
 function ReportPage({ username }) {
   const navigate = useNavigate();
   const [reportData, setReportData] = useState(null);
-  const [predictedTime, setPredictedTime] = useState(null);
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
-    const fetchReportData = async () => {
-      try {
-        const latestData = await getUserDataReport(username);
-        setReportData(latestData);
-
-        if (latestData.level < 7) {
-          const prediction = await getPrediction(latestData.level + 1);
-          setPredictedTime(prediction);
-        }
-      } catch (error) {
-        console.error("Error fetching report data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (username) {
-      fetchReportData();
+      (async () => {
+        try {
+          const latestData = await getUserDataReport(username);
+          setReportData(latestData);
+        } catch (error) {
+          console.error("Error fetching report data", error);
+        } finally {
+          setLoading(false);
+        }
+      })();
     }
   }, [username]);
 
   useEffect(() => {
     if (reportData && reportData.level === 7) {
       const userData = JSON.parse(localStorage.getItem(username)) || {};
-      const levels = Object.keys(userData).map(Number).sort((a, b) => a - b);
-      const data = levels.map(level => ({
+      const levels = Object.keys(userData)
+        .map(Number)
+        .sort((a, b) => a - b);
+      const data = levels.map((level) => ({
         level: `Level ${level}`,
         Actual: userData[level].actualTime,
-        Predicted: userData[level].predictedTime
+        Predicted: userData[level].predictedTime,
+        CorrectMatches: userData[level].correctMatches,
+        IncorrectAttempts: userData[level].incorrectAttempts,
       }));
       setChartData(data);
     }
   }, [reportData, username]);
 
-  const handleNextLevel = () => {
-    const nextLevel = reportData ? reportData.level + 1 : 1;
-    const nextLevelRoute = `/level-${numberToWords(nextLevel)}`;
-    navigate(nextLevelRoute);
-  };
-
-  const numberToWords = (level) => {
-    const levelsMap = {
-      1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven",
-    };
-    return levelsMap[level] || "one";
-  };
-
-  const personalizedGreeting = () => {
-    if (!reportData) return '';
-    const { level, incorrectAttempts, timeTaken, correctMatches } = reportData;
-    let greeting = `Hello ${username}, great job on completing level ${level} 😊`;
-
-    const averageReactionTime = correctMatches > 0 ? (timeTaken / correctMatches).toFixed(2) : 'N/A';
-    greeting += incorrectAttempts > 0 
-      ? ` <br/><br/> You faced some challenges, but you overcame them bravely. 🙌`
-      : ` <br/><br/> You had a smooth performance, which is impressive! 💯`;
-    greeting += `<br/><br/><strong>Average Reaction Time:</strong> ${averageReactionTime} seconds`;
-
-    return greeting;
-  };
+  const { performanceAnalysis, recommendations } = generateAnalysis(
+    reportData,
+    chartData,
+    username
+  );
 
   if (loading) {
-    return <div className="centeredContainer"><div>Loading report...</div></div>;
+    return <div className="centeredContainer">Loading report...</div>;
   }
 
   return (
     <div className="centeredContainer">
-      <div className="reportPage">
-        <h1>Progress Report</h1>
-        <p dangerouslySetInnerHTML={{ __html: personalizedGreeting() }}></p>
-        
-        {reportData && reportData.level < 7 && (
-          <>
-            <p><strong>Predicted Reaction Time for Next Level:</strong> {predictedTime.toFixed(2)} seconds</p>
-            <button onClick={handleNextLevel} className="nextLevelButton">Next Level</button>
-          </>
-        )}
+      <div className="reportPage" id="repoertPage">
+        <h1 className="reportTitle">Assessment Report for {username}</h1>
+        <p className="reportIntroduction">
+          This report assesses the current motor skills and hand-eye
+          coordination level of {username} when compared to peers of the same
+          age level (ages 6-15) diagnosed with Level 1 Autism Spectrum Disorder.
+        </p>
 
-{reportData && reportData.level === 7 && chartData.length > 0 && (
-          <>
-            <LineChart width={600} height={300} data={chartData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="level" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="Actual" stroke="#0000FF" />
-              <Line type="monotone" dataKey="Predicted" stroke=" #FF0000" />
+        {reportData && reportData.level === 7 && chartData.length > 0 && (
+          <div className="recharts-wrapper">
+            <LineChart
+              width={600}
+              height={300}
+              data={chartData}
+              margin={{
+                top: 5,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+              <XAxis dataKey="level" stroke="#333" />
+              <YAxis stroke="#333" />
+              <Tooltip
+                cursor={{ strokeDasharray: "3 3" }}
+                formatter={(value, name, props) => [value, name]}
+              />
+              <Legend
+                align="center"
+                verticalAlign="bottom"
+                layout="horizontal"
+                wrapperStyle={{
+                  paddingLeft: "20px",
+                  paddingBottom: "2px",
+                  paddingTop: "5px",
+                }}
+              />
+              <Line
+                type="monotone"
+                dataKey="Actual"
+                stroke="#ff0000"
+                strokeWidth={2}
+                dot={{ fill: "#ff0000", strokeWidth: 2 }}
+              />
+              <Line
+                type="monotone"
+                dataKey="Predicted"
+                stroke="#009432"
+                strokeWidth={2}
+                dot={{ fill: "#009432", strokeWidth: 2 }}
+              />
+              <Line
+                type="monotone"
+                strokeDasharray="5 5"
+                dataKey="IncorrectAttempts"
+                stroke="#00008B"
+                strokeWidth={2}
+                dot={{ fill: "#00008B", strokeWidth: 2 }}
+              />
             </LineChart>
-          </>
+          </div>
         )}
+        <div className="analysisContainer">
+          <div className="reportAnalysis">
+            <h2>Performance Analysis</h2>
+            <ul className="analysisList">
+              {renderAnalysisPoints(performanceAnalysis)}
+            </ul>
+          </div>
+          <div className="recommendations">
+            <h2>Recommendations</h2>
+            <ul className="analysisList">
+              {renderAnalysisPoints(recommendations)}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
+}
+
+function generateAnalysis(reportData, chartData, username) {
+  if (!reportData || reportData.level < 7)
+    return { performanceAnalysis: "", recommendations: "" };
+
+  let performanceAnalysis = "Performance Analysis:\n";
+  let recommendations = "Recommendations:\n";
+  let skillLevel = "Fundamental";
+
+  const incorrectAttempts = chartData.reduce(
+    (acc, data) => acc + data.IncorrectAttempts,
+    0
+  );
+
+  if (incorrectAttempts === 0) {
+    performanceAnalysis += `${username} showed exceptional performance with no incorrect attempts. This indicates a good understanding of color, shape and scale.\n`;
+    skillLevel = "Proficient";
+  } else {
+    performanceAnalysis += `${username} displayed good performance but faced some challenges.\n`;
+
+    const higherLevelMistakes = chartData.some(
+      (data) => data.level > 2 && data.IncorrectAttempts > 0
+    );
+    if (higherLevelMistakes) {
+      recommendations += `Focus on enhancing skills in complex task handling.\n`;
+    } else {
+      recommendations += `Encourage practice in adapting to new challenges.\n`;
+    }
+  }
+ 
+  const reactionTimeComparison = chartData.every(
+    (data) => data.Actual <= data.Predicted
+  );
+  if (reactionTimeComparison) {
+    performanceAnalysis += `${username} consistently matched or exceeded the predicted reaction times, demonstrating a proficient skill level.\n`;
+    skillLevel = "Proficient";
+  } else {
+    performanceAnalysis += `There is room for improvement in reaction speed and hand eye coordination.\n`;
+    recommendations += `Consider structured activities that progressively increase in pace and complexity.\n`;
+  }
+
+  performanceAnalysis += `\nOverall Skill Level: ${skillLevel}`;
+
+  return { performanceAnalysis, recommendations: recommendations.trim() };
+}
+
+function renderAnalysisPoints(analysisText) {
+  // Split the analysis text by new lines and filter out any empty strings or the first line
+  const analysisPoints = analysisText
+    .split("\n")
+    .filter((point, index) => point && index !== 0);
+
+  return analysisPoints.map((point, index) => (
+    <li key={index}>
+      <span className="checkmark">✔</span>
+      {point}
+    </li>
+  ));
 }
 
 export default ReportPage;
