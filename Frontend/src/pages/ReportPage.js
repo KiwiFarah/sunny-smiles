@@ -178,7 +178,7 @@ function generateAnalysis(reportData, chartData, username) {
     performanceAnalysis += `${username} consistently matched or exceeded the predicted reaction times, demonstrating a proficient skill level.\n`;
     skillLevel = "Proficient";
   } else {
-    performanceAnalysis += `There is room for improvement in reaction speed and hand eye coordination.\n`;
+    performanceAnalysis += `There is room for improvement in matching speed and hand eye coordination.\n`;
     recommendations += `Consider structured activities that progressively increase in pace and complexity.\n`;
   }
 
