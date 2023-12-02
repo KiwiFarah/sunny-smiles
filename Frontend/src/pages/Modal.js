@@ -12,7 +12,7 @@ function Modal({ show, onClose, onGenerateReport, currentLevel }) {
 
   const handleNextLevel = () => {
     let nextLevelRoute;
-    // Decide the route based on the current level
+    
     switch (currentLevel) {
       case 1: nextLevelRoute = "/level-two"; break;
       case 2: nextLevelRoute = "/level-three"; break;

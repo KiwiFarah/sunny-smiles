@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './NameModal.css';
-import logo from '../assets/logo.png';  // Import the logo
+import logo from '../assets/logo.png';  
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -15,7 +15,7 @@ function NameModal({ onClose }) {
         } else {
             console.error('onClose is not a function:', onClose);
         }
-        navigate('/'); // Navigate to GameLevel1
+        navigate('/'); 
     } else {
         alert('Please enter your name.');
     }

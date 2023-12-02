@@ -61,24 +61,23 @@ function randomizePosition(shapeWidth, shapeHeight, existingShapes) {
 }
 
 function GameLevel7({username}) {
-  const [gameActive, setGameActive] = useState(true);
+  const [gameActive, setGameActive] = useState(false);
   const [correctMatches, setCorrectMatches] = useState(0);
   const [incorrectAttempts, setIncorrectAttempts] = useState(0);
   const [model, setModel] = useState(null);
 
   const [startTime, setStartTime] = useState(null);
 
-  //countdown
-
+  
   const hasCountdownStarted = useRef(false);
-
   const [showCountdown, setShowCountdown] = useState(true);
   const handleCountdownEnd = () => {
     const now = Date.now();
-    console.log("Countdown ended at:", now); // log the current time when countdown ends
+    console.log("Countdown ended at:", now);
     setShowCountdown(false);
     setStartTime(now);
-  };
+    setGameActive(true); 
+};
 
   let initialShapes = [
     {
@@ -264,10 +263,10 @@ function GameLevel7({username}) {
   const [potentialDropTargets, setPotentialDropTargets] = useState([]);
 
   const saveLevelData = (username, level, actualTime, predictedTime, correctMatches, incorrectAttempts) => {
-    // Retrieve existing data or initialize if not present
+    
     const userData = JSON.parse(localStorage.getItem(username)) || {};
   
-    // Update the data for the specific level
+    
     userData[level] = { 
       actualTime, 
       predictedTime, 
@@ -275,7 +274,7 @@ function GameLevel7({username}) {
       incorrectAttempts 
     };
   
-    // Save the updated data back to local storage
+    
     localStorage.setItem(username, JSON.stringify(userData));
   };
   
@@ -293,17 +292,17 @@ function GameLevel7({username}) {
         level: 7
       };
   
-      // Send the game data to the backend
+      
       addUserData(userData)
         .then(response => {
           console.log("Data saved successfully:", response);
   
-          // Request prediction from the backend
+          
           getPrediction(userData.level + 1)
             .then(predictionResponse => {
               console.log("Prediction for next level:", predictionResponse);
               
-              // Save level data to local storage including correct and incorrect matches
+              
               saveLevelData(username, 7, timeTaken / 9, predictionResponse, correctMatches, incorrectAttempts);
             })
             .catch(error => console.error("Error getting prediction:", error));
@@ -402,7 +401,7 @@ function GameLevel7({username}) {
   };
 
   const handleDragEnd = (event, shapeId) => {
-    setPotentialDropTargets([]); // Reset potential targets
+    setPotentialDropTargets([]); 
 
     const initialX = parseFloat(event.dataTransfer.getData("initialX"));
     const initialY = parseFloat(event.dataTransfer.getData("initialY"));
@@ -497,7 +496,7 @@ function GameLevel7({username}) {
                 return (
                   <div
                     key={shape.id}
-                    draggable={gameActive}
+                    draggable={gameActive && shape.size === "small"}
                     onDragStart={(event) => handleDragStart(event, shape.id)}
                     onDragEnd={(event) => handleDragEnd(event, shape.id)}
                     onDrop={(event) => handleDrop(event, shape.id)}

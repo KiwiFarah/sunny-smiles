@@ -71,31 +71,33 @@ function GameLevel1({ username, onUsernameSet  }) {
     }
   };
   
-  //countdown
+  
 
   const hasCountdownStarted = useRef(false);
   const [showCountdown, setShowCountdown] = useState(false);
   const handleCountdownEnd = () => {
     const now = Date.now();
-    console.log("Countdown ended at:", now); // log the current time when countdown ends
+    console.log("Countdown ended at:", now);
     setShowCountdown(false);
     setStartTime(now);
-  };
+    setGameActive(true); 
+};
 
-  const [gameActive, setGameActive] = useState(true);
+
+  const [gameActive, setGameActive] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [correctMatches, setCorrectMatches] = useState(0);
   const [incorrectAttempts, setIncorrectAttempts] = useState(0);
   const [model, setModel] = useState(null);
 
   
-  // useEffect(() => {
-  //   async function loadModel() {
-  //     const loadedModel = await createModel();
-  //     setModel(loadedModel);
-  //   }
-  //   loadModel();
-  // }, []);
+  
+  
+  
+  
+  
+  
+  
 
   let initialShapes = [
     { id: 1, type: "circle", color: "#D49CDA", size: "small", r: 30 },
@@ -171,12 +173,12 @@ function GameLevel1({ username, onUsernameSet  }) {
   const [positions, setPositions] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [potentialDropTargets, setPotentialDropTargets] = useState([]);
-  // This function should be called when a level is completed
+  
   const saveLevelData = (username, level, actualTime, predictedTime, correctMatches, incorrectAttempts) => {
-    // Retrieve existing data or initialize if not present
+    
     const userData = JSON.parse(localStorage.getItem(username)) || {};
   
-    // Update the data for the specific level
+    
     userData[level] = { 
       actualTime, 
       predictedTime, 
@@ -184,7 +186,7 @@ function GameLevel1({ username, onUsernameSet  }) {
       incorrectAttempts 
     };
   
-    // Save the updated data back to local storage
+    
     localStorage.setItem(username, JSON.stringify(userData));
   };
   useEffect(() => {
@@ -201,17 +203,17 @@ function GameLevel1({ username, onUsernameSet  }) {
         level: 1
       };
   
-      // Send the game data to the backend
+      
       addUserData(userData)
         .then(response => {
           console.log("Data saved successfully:", response);
   
-          // Request prediction from the backend
+          
           getPrediction(userData.level + 1)
             .then(predictionResponse => {
               console.log("Prediction for next level:", predictionResponse);
               
-              // Save level data to local storage including correct and incorrect matches
+              
               saveLevelData(username, 1, timeTaken/3, predictionResponse, correctMatches, incorrectAttempts);
             })
             .catch(error => console.error("Error getting prediction:", error));
@@ -229,7 +231,7 @@ function GameLevel1({ username, onUsernameSet  }) {
     setShowModal(false);
     const report = generateReport();
     console.log("Report:", report);
-    await addUserData(username, report); // Assuming you want to save the report data to a backend
+    await addUserData(username, report); 
   };
   
   const handleDragStart = (event, shapeId) => {
@@ -310,7 +312,7 @@ function GameLevel1({ username, onUsernameSet  }) {
   };
 
   const handleDragEnd = (event, shapeId) => {
-    setPotentialDropTargets([]); // Reset potential targets
+    setPotentialDropTargets([]); 
 
     const initialX = parseFloat(event.dataTransfer.getData("initialX"));
     const initialY = parseFloat(event.dataTransfer.getData("initialY"));
@@ -407,7 +409,7 @@ function GameLevel1({ username, onUsernameSet  }) {
                 return (
                   <div
                     key={shape.id}
-                    draggable={gameActive}
+                    draggable={gameActive && shape.size === "small"}
                     onDragStart={(event) => handleDragStart(event, shape.id)}
                     onDragEnd={(event) => handleDragEnd(event, shape.id)}
                     onDrop={(event) => handleDrop(event, shape.id)}

@@ -188,7 +188,7 @@ function generateAnalysis(reportData, chartData, username) {
 }
 
 function renderAnalysisPoints(analysisText) {
-  // Split the analysis text by new lines and filter out any empty strings or the first line
+  
   const analysisPoints = analysisText
     .split("\n")
     .filter((point, index) => point && index !== 0);

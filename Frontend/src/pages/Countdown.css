@@ -1,15 +1,15 @@
 .countdown {
-  font-size: 100px; /* Increased font size */
+  font-size: 100px; 
   font-weight: 800;
-  color: #e06666 ; /* Picked a color from your shapes for consistency */
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Subtle drop shadow */
-  font-family: 'Arial', sans-serif; /* Consider using a more stylish font if you have one in mind */
+  color: #e06666 ; 
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); 
+  font-family: 'Arial', sans-serif; 
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 100000;
-  transition: transform 0.3s, opacity 0.3s; /* Smooth transition */
+  transition: transform 0.3s, opacity 0.3s; 
 }
 
 .countdown.fade-out {

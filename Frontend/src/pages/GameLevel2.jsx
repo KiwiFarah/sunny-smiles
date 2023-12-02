@@ -60,23 +60,24 @@ function randomizePosition(shapeWidth, shapeHeight, existingShapes) {
 }
 
 function GameLevel2({username}) {
-    const [gameActive, setGameActive] = useState(true);
+    const [gameActive, setGameActive] = useState(false);
     const [startTime, setStartTime] = useState(null);
     const [correctMatches, setCorrectMatches] = useState(0);
     const [incorrectAttempts, setIncorrectAttempts] = useState(0);
     const [model, setModel] = useState(null);
 
-      //countdown
+      
 
-  const hasCountdownStarted = useRef(false);
+      const hasCountdownStarted = useRef(false);
+      const [showCountdown, setShowCountdown] = useState(true);
+      const handleCountdownEnd = () => {
+        const now = Date.now();
+        console.log("Countdown ended at:", now);
+        setShowCountdown(false);
+        setStartTime(now);
+        setGameActive(true); 
+    };
 
-  const [showCountdown, setShowCountdown] = useState(true);
-  const handleCountdownEnd = () => {
-    const now = Date.now();
-    console.log("Countdown ended at:", now); // log the current time when countdown ends
-    setShowCountdown(false);
-    setStartTime(now);
-  };
 
     let initialShapes = [
         { id: 1, type: "circle", color: "#D49CDA", size: "small", r: 30 },
@@ -119,10 +120,10 @@ function GameLevel2({username}) {
     const [showModal, setShowModal] = useState(false);
     const [potentialDropTargets, setPotentialDropTargets] = useState([]);
     const saveLevelData = (username, level, actualTime, predictedTime, correctMatches, incorrectAttempts) => {
-        // Retrieve existing data or initialize if not present
+        
         const userData = JSON.parse(localStorage.getItem(username)) || {};
       
-        // Update the data for the specific level
+        
         userData[level] = { 
           actualTime, 
           predictedTime, 
@@ -130,7 +131,7 @@ function GameLevel2({username}) {
           incorrectAttempts 
         };
       
-        // Save the updated data back to local storage
+        
         localStorage.setItem(username, JSON.stringify(userData));
       };
       useEffect(() => {
@@ -147,17 +148,17 @@ function GameLevel2({username}) {
             level: 2
           };
       
-          // Send the game data to the backend
+          
           addUserData(userData)
             .then(response => {
               console.log("Data saved successfully:", response);
       
-              // Request prediction from the backend
+              
               getPrediction(userData.level + 1)
                 .then(predictionResponse => {
                   console.log("Prediction for next level:", predictionResponse);
                   
-                  // Save level data to local storage including correct and incorrect matches
+                  
                   saveLevelData(username, 2, timeTaken/4, predictionResponse, correctMatches, incorrectAttempts);
                 })
                 .catch(error => console.error("Error getting prediction:", error));
@@ -228,7 +229,7 @@ function GameLevel2({username}) {
     };
 
     const handleDragEnd = (event, shapeId) => {
-      setPotentialDropTargets([]); // Reset potential targets
+      setPotentialDropTargets([]); 
   
       const initialX = parseFloat(event.dataTransfer.getData("initialX"));
       const initialY = parseFloat(event.dataTransfer.getData("initialY"));
@@ -284,7 +285,7 @@ function GameLevel2({username}) {
                                 return (
                                     <div
                                         key={shape.id}
-                                        draggable={gameActive}
+                                        draggable={gameActive && shape.size === "small"}
                                         onDragStart={(event) => handleDragStart(event, shape.id)}
                                         onDragEnd={(event) => handleDragEnd(event, shape.id)}
                                         onDrop={(event) => handleDrop(event, shape.id)}
