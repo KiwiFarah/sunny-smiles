@@ -22,9 +22,9 @@ const level1Shapes = [
     height: 30,
   },
   {
-    id: 5, // Adjust id as necessary, I'm using 5 assuming you'll add after the existing shapes
+    id: 5, 
     type: "triangle",
-    color: "#FFA726", // You can change the color
+    color: "#FFA726", 
     size: "small",
     x: 350,
     y: 350,
@@ -54,9 +54,9 @@ const level2Shapes = [
     height: 30,
   },
   {
-    id: 3, // Adjust id as necessary, I'm using 5 assuming you'll add after the existing shapes
+    id: 3, 
     type: "triangle",
-    color: "#FFA726", // You can change the color
+    color: "#FFA726", 
     size: "small",
     x: 350,
     y: 350,
@@ -94,9 +94,9 @@ const level3Shapes = [
     height: 30,
   },
   {
-    id: 3, // Adjust id as necessary, I'm using 5 assuming you'll add after the existing shapes
+    id: 3, 
     type: "triangle",
-    color: "#FFA726", // You can change the color
+    color: "#FFA726", 
     size: "small",
     x: 350,
     y: 350,
@@ -141,9 +141,9 @@ const level4Shapes = [
     height: 30,
   },
   {
-    id: 3, // Adjust id as necessary, I'm using 5 assuming you'll add after the existing shapes
+    id: 3, 
     type: "triangle",
-    color: "#FFA726", // You can change the color
+    color: "#FFA726", 
     size: "small",
     x: 350,
     y: 350,
@@ -196,9 +196,9 @@ const level5Shapes = [
     height: 30,
   },
   {
-    id: 3, // Adjust id as necessary, I'm using 5 assuming you'll add after the existing shapes
+    id: 3, 
     type: "triangle",
-    color: "#FFA726", // You can change the color
+    color: "#FFA726", 
     size: "small",
     x: 350,
     y: 350,
@@ -259,9 +259,9 @@ const level6Shapes = [
     height: 30,
   },
   {
-    id: 3, // Adjust id as necessary, I'm using 5 assuming you'll add after the existing shapes
+    id: 3, 
     type: "triangle",
-    color: "#FFA726", // You can change the color
+    color: "#FFA726", 
     size: "small",
     x: 350,
     y: 350,
@@ -330,9 +330,9 @@ const level7Shapes = [
     height: 30,
   },
   {
-    id: 3, // Adjust id as necessary, I'm using 5 assuming you'll add after the existing shapes
+    id: 3, 
     type: "triangle",
-    color: "#FFA726", // You can change the color
+    color: "#FFA726", 
     size: "small",
     x: 350,
     y: 350,

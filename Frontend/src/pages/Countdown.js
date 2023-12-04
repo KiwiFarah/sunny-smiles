@@ -1,6 +1,6 @@
-// Countdown.js
+
 import React, { useState, useEffect } from 'react';
-import './Countdown.css';  // Assuming you will style it
+import './Countdown.css';  
 
 function Countdown({ onCountdownEnd }) {
   const [count, setCount] = useState(4);
@@ -10,10 +10,10 @@ function Countdown({ onCountdownEnd }) {
     if (count > 0) {
       setTimeout(() => setCount(count - 1), 1000);
     } else {
-      // Introduce a delay for the "Start" message
+      
       if (!isFading) {
         setIsFading(true);
-        setTimeout(onCountdownEnd, 500);  // delay for 1 more second after "Start"
+        setTimeout(onCountdownEnd, 500);  
       }
     }
   }, [count, onCountdownEnd, isFading]);

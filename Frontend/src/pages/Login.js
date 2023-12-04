@@ -33,14 +33,14 @@ const StyledGoogleButton = styled(Button)(({ theme }) => ({
 
 const ModalBox = styled(Box)({
   width: 620,
-  padding: "5px 5px 50px 5px", // Adjusted the padding-bottom to 50px
-  paddingTop: 100, // Retaining the top padding to account for logo position
+  padding: "5px 5px 50px 5px", 
+  paddingTop: 100, 
   boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.3)",
   borderRadius: 5,
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  position: "relative", // This allows for positioning the logo relative to the box
+  position: "relative", 
 });
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -157,7 +157,7 @@ function Login() {
               fontFamily: "Poppins, sans-serif",
               fontSize: "1.1rem",
               cursor: "pointer",
-              color: "#007BFF", // This is a typical blue color used for links
+              color: "#007BFF", 
             }}
           >
             Forgot Password?

@@ -5,7 +5,6 @@ let trainedModel;
 
 const loadModel = async () => {
     try {
-        // Assuming the model is saved in the 'model' directory
         trainedModel = await tf.loadLayersModel('file://./model/model.json');
         console.log("Model loaded successfully.");
     } catch (error) {

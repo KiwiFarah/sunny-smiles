@@ -24,7 +24,7 @@ function Shape({ type, color, dimensions }) {
         </svg>
       );
     case "pentagon":
-      // For simplicity, I'll create a symmetrical pentagon using its width and height
+      
       const w = dimensions.width;
       const h = dimensions.height;
       const points = [
@@ -86,7 +86,7 @@ function Shape({ type, color, dimensions }) {
       const nh = dimensions.height;
       const nonaPoints = Array.from({ length: 9 })
         .map((_, i) => {
-          const angle = ((2 * Math.PI) / 9) * i; // Fix angle for nonagon
+          const angle = ((2 * Math.PI) / 9) * i; 
           const x = nw / 2 + (nw / 2) * Math.cos(angle);
           const y = nh / 2 + (nh / 2) * Math.sin(angle);
           return `${x},${y}`;
@@ -206,7 +206,7 @@ function Shape({ type, color, dimensions }) {
         </svg>
       );
     case "hexagon":
-      // Similarly, creating a symmetrical hexagon
+      
       const hw = dimensions.width;
       const hh = dimensions.height;
       const hexPoints = [

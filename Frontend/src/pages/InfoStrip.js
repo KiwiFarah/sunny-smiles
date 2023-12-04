@@ -6,11 +6,11 @@ function InfoStrip({ startTime, correctMatches, incorrectAttempts }) {
 
     useEffect(() => {
         if (startTime) {
-            console.log("StartTime in InfoStrip:", startTime, "Current Time:", Date.now());  // log startTime & the moment elapsed time begins
-            // Immediately update the elapsed time once
+            console.log("StartTime in InfoStrip:", startTime, "Current Time:", Date.now());  
+            
             setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
     
-            // Then start the regular interval updates
+            
             const interval = setInterval(() => {
                 setElapsedTime(prevTime => prevTime + 1);
             }, 1000);
