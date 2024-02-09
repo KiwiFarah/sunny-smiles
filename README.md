@@ -3,6 +3,8 @@
 ## About 🚀
 Sunny Smiles is a specialized gaming platform designed to evaluate and monitor the skill levels of children diagnosed with Autism Spectrum Disorder (ASD). Leveraging neural networks with the Adam optimizer, this platform generates insightful live reports and data visualizations, contributing to personalized education strategies.
 
+![image](https://github.com/KiwiFarah/sunny-smiles/assets/98280142/bc2f59c3-2012-4383-9981-ec481754d84c)
+
 ## Key Features 🌟
 - Utilizes TensorFlow for neural network implementation.
 - Employs the Adam optimizer for efficient training.
